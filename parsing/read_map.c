@@ -166,14 +166,6 @@ int	read_map(char *av)
 	map_valid	*map;
 	map_cub		*map_c;
 
-	// map = malloc(sizeof(map_valid));
-	// if (map)
-	// {
-    //     map->color = NULL;
-    //     map->path = NULL;
-    //     map->type = NULL;
-    //     map->next = NULL;
-    // }
 	map = NULL;
 	map_c = malloc(sizeof(map_cub));
 	if (!map_c)
@@ -185,18 +177,18 @@ int	read_map(char *av)
 		return free(map_c), ft_putstr_fd("ERROR\nfailed to allocate player\n", 2), 0;
 	i = 0;
 	if (!av)
-		return (ft_putstr_fd("Error\nInvalid map\n", 2), 0);
+		return (ft_putstr_fd("Error\nInvalid map\n", 2), free(map_c), free(map), 0);
 	fd = open(av, O_RDONLY);
 	if (fd == -1)
-		return (ft_putstr_fd("Error\nmap not found\n", 2), 0);
+		return (ft_putstr_fd("Error\nmap not found\n", 2), free(map_c), free(map), 0);
 	line = get_next_line(fd);
 	if (!line)
-		return (ft_putstr_fd("Error\nread function failed!\n", 2), 0);
+		return (ft_putstr_fd("Error\nread function failed!\n", 2), free(map_c), free(map), 0);
 	while (line)
 	{
 		if (map_c->maps && !ft_strcmp(line, "\n"))
 			return (free_map_c(map_c), free_map(&map), free_player(map_c->player_pos),
-				ft_putstr_fd("Error\nInvalid file (more new lines)!\n", 2), 0);
+				free(map_c), ft_putstr_fd("Error\nInvalid file (more new lines)!\n", 2), 0);
 		if (!ft_strcmp(line, "\n"))
 		{
 			free(line), line = get_next_line(fd);
@@ -207,14 +199,14 @@ int	read_map(char *av)
 			&& ft_strncmp(line, " ", 1) != 0)
 		{
 			if (!handle_cordonnes(line, &map))
-				return (free(line), free_map_c(map_c), free_map(&map), free_player(map_c->player_pos), 0);
+				return (free(line), free_map_c(map_c), free_map(&map), free_player(map_c->player_pos), free(map_c), 0);
 			i++;
 		}
 		else
 			collecte_map(line, &map_c);
 		if (i == 0)
 			return free_map_c(map_c), free_map(&map), free_player(map_c->player_pos),
-				ft_putstr_fd("ERROR\nMap file doesn't respects the structure\n", 2), 0;
+				free(map_c), ft_putstr_fd("ERROR\nMap file doesn't respects the structure\n", 2), 0;
 		free(line);
 		line = get_next_line(fd);
 	}
@@ -227,8 +219,8 @@ int	read_map(char *av)
 		current=current->next;
 	}
 	if (!check_texture_extention(map) || !ft_handle_color(map))// || !ft_handle_path(map)
-		return free_map_c(map_c), free_map(&map), free_player(map_c->player_pos), 0;
+		return free_map_c(map_c), free_map(&map), free_player(map_c->player_pos), free(map_c), 0;
 	if (!creat_2darray(&map_c) || !handle_map(&map_c))
-		return free_map_c(map_c), free_map(&map), free_player(map_c->player_pos), 0;
-	return free_map_c(map_c), free_player(map_c->player_pos), free_map(&map), 1;//test free's functions.
+		return free_map_c(map_c), free_map(&map), free_player(map_c->player_pos), free(map_c), 0;
+	return free_map_c(map_c), free_player(map_c->player_pos), free_map(&map), free(map_c), 1;//test free's functions.
 }
