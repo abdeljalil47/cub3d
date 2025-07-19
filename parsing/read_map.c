@@ -7,12 +7,13 @@ int ft_handle_path(map_valid *val)
 
 	while (check)
 	{
-		if (!val || !ft_strnstr(check->path, "./", 2))
-			return ft_putstr_fd("ERROR\nTexture path dont have './'\n", 2), 0;
+		// if (!val || !ft_strnstr(check->path, "./", 2))
+		// 	return ft_putstr_fd("ERROR\nTexture path dont have './'\n", 2), 0;
 		fd = open(check->path, O_DIRECTORY | O_RDONLY);
 		if (fd == -1)
 			return ft_putstr_fd("ERROR\nCan't open the file '", 2)
 				, write(2, check->path, ft_strlen(check->path)), write(2, "'\n", 2), 0;
+		close(fd);
 		check = check->next;
 	}
 	return 1;
@@ -54,7 +55,7 @@ int ft_color_rgb(map_valid **map)
 
 int ft_handle_color(map_valid *map)
 {
-	map_valid *color;
+	map_valid *color; 
 	int j;
 	int comma;
 
@@ -224,7 +225,7 @@ int	read_map(char *av)
 	while (line)
 	{
 		if (map_c->maps && !ft_strcmp(line, "\n"))
-			return (free_map_c(map_c), free_map(&map), free_player(map_c->player_pos),
+			return (free_map_c(map_c), free_map(&map), free_player(map_c->player_pos), close(fd),
 				free(map_c), ft_putstr_fd("Error\nInvalid file (more new lines)!\n", 2), 0);
 		if (!ft_strcmp(line, "\n"))
 		{
@@ -234,17 +235,19 @@ int	read_map(char *av)
 		else if (check_type_cordonnes(map))
 		{
 			if (!handle_cordonnes(line, &map))
-				return (free(line), free_map_c(map_c), free_map(&map), free_player(map_c->player_pos), free(map_c), 0);
+				return (free(line), free_map_c(map_c), free_map(&map), close(fd),
+					free_player(map_c->player_pos), free(map_c), 0);
 			i++;
 		}
 		else
 			collecte_map(line, &map_c);
 		if (i == 0)
-			return free_map_c(map_c), free_map(&map), free_player(map_c->player_pos),
+			return free_map_c(map_c), free_map(&map), free_player(map_c->player_pos), close(fd),
 				free(map_c), ft_putstr_fd("ERROR\nMap file doesn't respects the structure or bad cordonnes!\n", 2), 0;
 		free(line);
 		line = get_next_line(fd);
 	}
+	close(fd);
 	map_valid *current = map;
 	while (current)
 	{
@@ -253,9 +256,11 @@ int	read_map(char *av)
 			printf("\taaaaaaa:%s\n", current->color);
 		current=current->next;
 	}
-	if (!check_texture_extention(map) || !ft_handle_color(map))// || !ft_handle_path(map)
+	if (!check_texture_extention(map) || !ft_handle_color(map))// || !ft_handle_path(map))
 		return free_map_c(map_c), free_map(&map), free_player(map_c->player_pos), free(map_c), 0;
 	if (!creat_2darray(&map_c) || !handle_map(&map_c))
 		return free_map_c(map_c), free_map(&map), free_player(map_c->player_pos), free(map_c), 0;
-	return free_map_c(map_c), free_player(map_c->player_pos), free_map(&map), free(map_c), 1;//test free's functions.
+	if (!rander_map(map, map_c))
+		return free_map_c(map_c), free_player(map_c->player_pos), free_map(&map), free(map_c), 0;
+	return 1;//test free's functions. free_map_c(map_c), free_player(map_c->player_pos), free_map(&map), free(map_c), 
 }

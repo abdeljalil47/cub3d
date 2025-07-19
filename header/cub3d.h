@@ -36,6 +36,19 @@ typedef struct player
 	int position_y;
 } player;
 
+typedef struct s_taple
+{
+	void		*mlx;
+	void		*mlx_win;
+	void		*wall_img;
+	void		*player;
+	int			width;
+	int			height;
+	map_cub		*map_stru;
+	map_valid	*map_ele;
+	player		*player_coor;
+} t_table;
+
 int check_map_extention(char *av);
 int check_texture_extention(map_valid *texture);
 int read_map(char *av);
@@ -46,6 +59,9 @@ int creat_2darray(map_cub **map_c);
 int handle_map(map_cub **map_c);
 int	check_close_map(map_cub *map);
 int check_type(char **res, int flag);
+
+int	rander_map(map_valid *map_element, map_cub *map_structure);
+int	put_texture(t_table *table);
 
 void	free_res(char **res);
 void	free_map(map_valid **map);
