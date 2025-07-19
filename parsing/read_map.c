@@ -111,7 +111,7 @@ int ft_divide_line(char *line, char **res)
     len = 0;
     while (line[i + len])
         len++;
-    res[1] = ft_substr(line, i, len );
+    res[1] = ft_substr(line, i, len);
 	if (!res[1])
 		return ft_putstr_fd("ERROR\nmalloc failed!\n", 2), 0;
 	return 1;
@@ -131,7 +131,16 @@ char **handle_line(char *line)
 		return free_res(res), NULL;
     return res;
 }
-
+int check_duple(map_valid *map, char *value)
+{
+	while (map)
+	{
+		if (ft_strcmp(map->type, value) == 0)
+			return 0;
+		map = map->next;
+	}
+	return 1;
+}
 int handle_cordonnes(char *line, map_valid **map)
 {
 	char **res;
@@ -144,18 +153,46 @@ int handle_cordonnes(char *line, map_valid **map)
 		if (ft_strcmp(res[0], "N") != 0 && ft_strcmp(res[0], "S") != 0
 			&& ft_strcmp(res[0], "W") != 0 && ft_strcmp(res[0], "E") != 0
 			&& ft_strcmp(res[0], "F") != 0 && ft_strcmp(res[0], "C") != 0)
-			return free_res(res), ft_putstr_fd("ERROR\nBad cordonnes\n", 2), 0;
+			return free_res(res), ft_putstr_fd("ERROR\nBad coordonnes\n", 2), 0;
 	}
 	else
 	{
 		if (ft_strcmp(res[0], "NO") != 0 && ft_strcmp(res[0], "SO") != 0
 			&& ft_strcmp(res[0], "WE") != 0 && ft_strcmp(res[0], "EA") != 0
 			&& ft_strcmp(res[0], "F") != 0 && ft_strcmp(res[0], "C") != 0)
-			return free_res(res), ft_putstr_fd("ERROR\nBad cordonnes\n", 2), 0;
+			return free_res(res), ft_putstr_fd("ERROR\nBad coordonnes\n", 2), 0;
 	}
+	if (!check_duple(*map, res[0]))
+		return free_res(res), ft_putstr_fd("ERROR\nthe coordonner are duplicated!\n", 2),0;
 	init_map(map, res);
 	free_res(res);
 	return 1;
+}
+
+int	check_type_cordonnes(map_valid *lst)
+{
+	int	i;
+	map_valid *map = lst;
+	int flag;
+
+	i = 0;
+	flag = 0;
+	if (!lst)
+		return (1);
+	while (lst)
+	{
+		i++;
+		lst = lst->next;
+	}
+	while (map)
+	{
+		if (map->coordonne == true)
+			flag++;
+		map = map->next;
+	}
+	if (flag != 6)
+		return 1;
+	return 0;
 }
 
 int	read_map(char *av)
@@ -194,9 +231,7 @@ int	read_map(char *av)
 			free(line), line = get_next_line(fd);
 			continue;
 		}
-		else if (ft_strncmp(line, "1", 1) != 0
-			&& ft_strncmp(line, "0", 1) != 0
-			&& ft_strncmp(line, " ", 1) != 0)
+		else if (check_type_cordonnes(map))
 		{
 			if (!handle_cordonnes(line, &map))
 				return (free(line), free_map_c(map_c), free_map(&map), free_player(map_c->player_pos), free(map_c), 0);
@@ -206,7 +241,7 @@ int	read_map(char *av)
 			collecte_map(line, &map_c);
 		if (i == 0)
 			return free_map_c(map_c), free_map(&map), free_player(map_c->player_pos),
-				free(map_c), ft_putstr_fd("ERROR\nMap file doesn't respects the structure\n", 2), 0;
+				free(map_c), ft_putstr_fd("ERROR\nMap file doesn't respects the structure or bad cordonnes!\n", 2), 0;
 		free(line);
 		line = get_next_line(fd);
 	}

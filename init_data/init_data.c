@@ -26,6 +26,8 @@ int check_type(char **res, int flag)
 	return 0;
 }
 
+
+
 void init_map(map_valid **map, char **value)
 {
 	map_valid *element;
@@ -42,20 +44,19 @@ void init_map(map_valid **map, char **value)
 	element->next = NULL;
 	element->color_rgb = 0;
 	element->type = ft_strndup(value[0], ft_strlen(value[0]));
-
+	
 	if (check_type(value, 0))
 	{
 		element->path = ft_strndup(value[1], ft_strlen(value[1]) - 1);
 		element->color = ft_strdup("\0");
 		element->coordonne = true;
 	}
-
 	if (check_type(value, 1))
 	{
 		element->path = ft_strdup("\0");
 		element->color = ft_strndup(value[1], ft_strlen(value[1]) - 1);
+		element->coordonne = true;
 	}
-
 	if (!element->type || !element->path || !element->color)
 	{
 		if (element->type)

@@ -45,6 +45,7 @@ void    collecte_map(char *line, map_cub **map);
 int creat_2darray(map_cub **map_c);
 int handle_map(map_cub **map_c);
 int	check_close_map(map_cub *map);
+int check_type(char **res, int flag);
 
 void	free_res(char **res);
 void	free_map(map_valid **map);

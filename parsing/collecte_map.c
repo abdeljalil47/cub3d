@@ -10,8 +10,7 @@ void    collecte_map(char *line, map_cub **map)
 	back = (*map)->maps;
 	map_cole = ft_strjoin(back, line);
 	if (!map_cole)
-		//free_map()//TODO
-		return ;
+		return free_map_c(*map);
 	(*map)->maps = map_cole;
 	if (back)
 		free(back);
