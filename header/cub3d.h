@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <sys/time.h>
 #include <mlx.h>
 #include <math.h>
 #include <fcntl.h>
@@ -12,6 +13,7 @@
 #include "../get_next_line/get_next_line.h"
 
 typedef struct player player;
+typedef struct s_data t_data;
 
 typedef struct map_valid
 {
@@ -47,7 +49,19 @@ typedef struct s_taple
 	map_cub		*map_stru;
 	map_valid	*map_ele;
 	player		*player_coor;
+	t_data		*data;
 } t_table;
+
+typedef struct s_data
+{
+	char	*frames[44];
+	void	*mlx_frame[44];
+	int		width;
+	int		height;
+	long	current_time;
+	int		frame_id;																								
+}	t_data;
+
 
 int check_map_extention(char *av);
 int check_texture_extention(map_valid *texture);
@@ -60,8 +74,13 @@ int handle_map(map_cub **map_c);
 int	check_close_map(map_cub *map);
 int check_type(char **res, int flag);
 
-int	rander_map(map_valid *map_element, map_cub *map_structure);
+long	get_time();
+
+int	rander_map(map_valid **map_element, map_cub **map_structure);
 int	put_texture(t_table *table);
+int	move_player(t_table *table, int key);
+int	get_path_frame(t_table **param);
+int	player_effect(void *param);
 
 void	free_res(char **res);
 void	free_map(map_valid **map);

@@ -16,8 +16,8 @@ int	parce_lines(char *tmp, char *prev, char *next, int j)
 			continue;
 		}
 		if ((tmp[i] == '0' || tmp[i] == 'N' || tmp[i] == 'S' || tmp[i] == 'E' || tmp[i] == 'W')
-			&& ((int)ft_strlen(prev) < i) && (prev[i] != '1' && prev[i] != '0'
-			&& prev[i] != 'N' && prev[i] != 'S' && prev[i] != 'E' && prev[i] != 'W')) //top
+			&& (((int)ft_strlen(prev) < i) || (prev[i] != '1' && prev[i] != '0'
+			&& prev[i] != 'N' && prev[i] != 'S' && prev[i] != 'E' && prev[i] != 'W'))) //top
 			return 0;
 		if ((tmp[i] == '0' || tmp[i] == 'N' || tmp[i] == 'S' || tmp[i] == 'E' || tmp[i] == 'W')
 			&& (tmp[i + 1] != '0' && tmp[i + 1] != '1'
@@ -28,8 +28,8 @@ int	parce_lines(char *tmp, char *prev, char *next, int j)
 			&& tmp[i - 1] != 'N' && tmp[i - 1] != 'S' && tmp[i - 1] != 'E' && tmp[i - 1] != 'W')) //right
 			return 0;
 		if ((tmp[i] == '0' || tmp[i] == 'N' || tmp[i] == 'S' || tmp[i] == 'E' || tmp[i] == 'W')
-			&& ((int)ft_strlen(next) < i) && (next[i] != '1' && next[i] != '0'
-			&& next[i] != 'N' && next[i] != 'S' && next[i] != 'E' && next[i] != 'W')) //bottom
+			&& (((int)ft_strlen(next) < i) || (next[i] != '1' && next[i] != '0'
+			&& next[i] != 'N' && next[i] != 'S' && next[i] != 'E' && next[i] != 'W'))) //bottom
 			return 0;
 		i++;
 	}
