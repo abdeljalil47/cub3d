@@ -4,9 +4,9 @@ long	get_time()
 {
 	struct timeval	tv;
 
-	if (!gettimeofday(&tv, NULL))
+	if (gettimeofday(&tv, NULL) < 0)
 		return ft_putstr_fd("ERROR\ngettimeofday failed!\n", 2), -1;
-	return (tv.tv_usec * 1000000 + tv.tv_sec);
+	return (long)((tv.tv_sec * 1000000) + tv.tv_usec);
 }
 
 char *ft_return_file(int i)
@@ -45,8 +45,8 @@ int	get_path_frame(t_table **param)
 			return 0;//TODO: free_frames();
 		i++;
 	}
-	i = -1;
-	while (data->frames[++i])
+	i = 0;
+	while (i < 44)
 	{
 		data->mlx_frame[i] = mlx_xpm_file_to_image((*param)->mlx,
 													data->frames[i],
@@ -55,6 +55,7 @@ int	get_path_frame(t_table **param)
 												);
 		if (!data->mlx_frame[i])
 			return 0;
+		i++;
 	}
 	return 1;
 }
@@ -68,20 +69,21 @@ int	player_effect(void *param)
 	if (time < 0)
 		return 0;
 	table = (t_table *)param;
-
 	if (time - table->data->current_time >= 100000)
 	{
 		mlx_clear_window(table->mlx, table->mlx_win);
-		if (table->data->frames[table->data->frame_id])
+		// printf("frame:%s\n", table->data->frames[table->data->frame_id]);
+		if (table->data->mlx_frame[table->data->frame_id])
         {
             mlx_put_image_to_window(table->mlx,
 									table->mlx_win,
-									table->data->frames[table->data->frame_id],
-									table->player_coor->position_y * 50,
-									table->player_coor->position_x * 50);
+									table->data->mlx_frame[table->data->frame_id],
+									table->player_coor->position_y * 64,
+									table->player_coor->position_x * 64);
         }
         table->data->frame_id = (table->data->frame_id + 1) % 44;
 		table->data->current_time = time;
 	}
+	put_texture(table);
 	return 1;
 }

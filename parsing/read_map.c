@@ -4,16 +4,23 @@ int ft_handle_path(map_valid *val)
 {
 	int fd;
 	map_valid *check = val;
-
+	int i= 0;
+	if (!val)
+		return 0;
 	while (check)
 	{
-		// if (!val || !ft_strnstr(check->path, "./", 2))
-		// 	return ft_putstr_fd("ERROR\nTexture path dont have './'\n", 2), 0;
-		fd = open(check->path, O_DIRECTORY | O_RDONLY);
-		if (fd == -1)
-			return ft_putstr_fd("ERROR\nCan't open the file '", 2)
-				, write(2, check->path, ft_strlen(check->path)), write(2, "'\n", 2), 0;
-		close(fd);
+		if (check->coordonne == 1 && i != 4)
+		{
+			// if ()
+			// 	;
+			printf("check_path:%s\n", check->path);
+			fd = open(check->path, O_RDONLY);
+			if (fd == -1)
+				return ft_putstr_fd("ERROR\nCan't open the file '", 2)
+					, write(2, check->path, ft_strlen(check->path)), write(2, "'\n", 2), 0;
+			close(fd);
+			i++;
+		}
 		check = check->next;
 	}
 	return 1;
@@ -248,13 +255,13 @@ int	read_map(char *av)
 		line = get_next_line(fd);
 	}
 	close(fd);
-	if (!check_texture_extention(map) || !ft_handle_color(map))// || !ft_handle_path(map))
+	if (!check_texture_extention(map) || !ft_handle_color(map) || !ft_handle_path(map))
 		return free_map_c(map_c), free_map(&map), free_player(map_c->player_pos), free(map_c), 0;
 	if (!creat_2darray(&map_c) || !handle_map(&map_c))
 		return free_map_c(map_c), free_map(&map), free_player(map_c->player_pos), free(map_c), 0;
 	printf("X:%d\n", map_c->player_pos->position_x);
 	printf("Y:%d\n", map_c->player_pos->position_y);
-	if (!rander_map(&map, &map_c))
-		return free_map_c(map_c), free_player(map_c->player_pos), free_map(&map), free(map_c), 0;
+	if (!rander_map(&map, &map_c, &map_c->player_pos))
+		return printf("aaaaaaaaaaaaaa\n"), free_map_c(map_c), free_player(map_c->player_pos), free_map(&map), free(map_c), 0;
 	return 1;//test free's functions. free_map_c(map_c), free_player(map_c->player_pos), free_map(&map), free(map_c), 
 }

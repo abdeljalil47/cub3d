@@ -38,7 +38,7 @@ int check_texture_extention(map_valid *av)
         return (ft_putstr_fd("Error\nInvalid texture\n", 2), 0);
     while (texture)
     {
-        printf("tex:%s\n", texture->path);
+        // printf("tex:%s\n", texture->path);
         if (texture->path && texture->color[0] == '\0'
             && (texture->path[0] == '\0'
             || !ft_strchr(texture->path, '.')))

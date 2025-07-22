@@ -12,6 +12,8 @@
 #include "../libft/libft.h"
 #include "../get_next_line/get_next_line.h"
 
+#define move_speed 0.2
+
 typedef struct player player;
 typedef struct s_data t_data;
 
@@ -36,6 +38,11 @@ typedef struct player
 {
 	int position_x;
 	int position_y;
+	int	radius;
+	double angle;
+	float rotation_speed;
+	int	forword_backword;    // 1 for; -1 back
+	int	leftword_rightword;  // 1 lefr; -1 right
 } player;
 
 typedef struct s_taple
@@ -46,6 +53,9 @@ typedef struct s_taple
 	void		*player;
 	int			width;
 	int			height;
+	int			bits_per_pixel;
+	int			line_length;
+	int			endian;
 	map_cub		*map_stru;
 	map_valid	*map_ele;
 	player		*player_coor;
@@ -54,12 +64,13 @@ typedef struct s_taple
 
 typedef struct s_data
 {
-	char	*frames[44];
-	void	*mlx_frame[44];
+	char	*frames[45];
+	void	*mlx_frame[45];
 	int		width;
 	int		height;
 	long	current_time;
-	int		frame_id;																								
+	int		frame_id;
+	void *img;																							
 }	t_data;
 
 
@@ -76,9 +87,9 @@ int check_type(char **res, int flag);
 
 long	get_time();
 
-int	rander_map(map_valid **map_element, map_cub **map_structure);
+int	rander_map(map_valid **map_element, map_cub **map_structure, player **player_coor);
 int	put_texture(t_table *table);
-int	move_player(t_table *table, int key);
+void	player_coordonneup(t_table **data);
 int	get_path_frame(t_table **param);
 int	player_effect(void *param);
 

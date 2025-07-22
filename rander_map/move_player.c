@@ -5,66 +5,31 @@
 	bottom->1
 	right->2
 	left->0
+	=========== change the player coordonne===
 */
+// int	has_wall_at(t_table *data, float x, float y)
+// {
+// 	if (x < 0 || x > data->data->width || y < 0 || y > data->height)
+// 		return 1;
+// 	int map_inx = (int)(x / (data->width / 2));
+// 	int map_iny = (int)(y / (data->height / 2));
+// 	return data->map_stru->dmaps[map_inx][map_iny] != 0;
+// }
 
-int	left_right(t_table *table, int key)
+void	player_coordonneup(t_table **data)
 {
-	int	prev_x;
-	int	prev_y;
+	t_table *table = *data;
 
-	prev_x = table->player_coor->position_x;
-	prev_y = table->player_coor->position_y;
-	if (key == 2)
-	{
-		if (table->map_stru->dmaps[prev_x][prev_y + 1] != '1') //right
-		{
-			table->player_coor->position_y += 1;
-			mlx_clear_window(table->mlx, table->mlx_win);
-			if (!put_texture(table))
-				return 0;
-		}
-	}
-	if (key == 0)
-	{
-		if (table->map_stru->dmaps[prev_x][prev_y - 1] != '1') //left
-		{
-			table->player_coor->position_y -= 1;
-			mlx_clear_window(table->mlx, table->mlx_win);
-			if (!put_texture(table))
-				return 0;
-		}
-	}
-	return 1;
-}
+	printf("%d\n", table->player_coor->forword_backword);
+	printf("%d\n", table->player_coor->leftword_rightword);
 
-int	move_player(t_table *table, int key)
-{
-	int	prev_x;
-	int	prev_y;
+	table->player_coor->angle += table->player_coor->leftword_rightword * table->player_coor->rotation_speed;
+	float movestep = table->player_coor->forword_backword * move_speed;
+	float new_x = table->player_coor->position_y + cos(table->player_coor->angle) * movestep;
+	float new_y = table->player_coor->position_x + sin(table->player_coor->angle) * movestep;
 
-	prev_x = table->player_coor->position_x;
-	prev_y = table->player_coor->position_y;
-	if (key == 13)
-	{
-		if (table->map_stru->dmaps[prev_x - 1][prev_y] != '1') //top
-		{
-			table->player_coor->position_x -= 1;
-			mlx_clear_window(table->mlx, table->mlx_win);
-			if (!put_texture(table))
-				return 0;
-		}
-	}
-	if (key == 1)
-	{
-		if (table->map_stru->dmaps[prev_x + 1][prev_y] != '1') //bottom
-		{
-			table->player_coor->position_x += 1;
-			mlx_clear_window(table->mlx, table->mlx_win);
-			if (!put_texture(table))
-				return 0;
-		}
-	}
-	else
-		left_right(table, key);
-	return 1;
+	table->player_coor->position_x = new_x;
+	table->player_coor->position_y = new_y;
+
+	put_texture(table);
 }
