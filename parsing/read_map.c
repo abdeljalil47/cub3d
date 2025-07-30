@@ -259,8 +259,8 @@ int	read_map(char *av)
 		return free_map_c(map_c), free_map(&map), free_player(map_c->player_pos), free(map_c), 0;
 	if (!creat_2darray(&map_c) || !handle_map(&map_c))
 		return free_map_c(map_c), free_map(&map), free_player(map_c->player_pos), free(map_c), 0;
-	printf("X:%d\n", map_c->player_pos->position_x);
-	printf("Y:%d\n", map_c->player_pos->position_y);
+	// printf("X:%d\n", map_c->player_pos->position_x);
+	// printf("Y:%d\n", map_c->player_pos->position_y);
 	if (!rander_map(&map, &map_c, &map_c->player_pos))
 		return printf("aaaaaaaaaaaaaa\n"), free_map_c(map_c), free_player(map_c->player_pos), free_map(&map), free(map_c), 0;
 	return 1;//test free's functions. free_map_c(map_c), free_player(map_c->player_pos), free_map(&map), free(map_c), 

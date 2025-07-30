@@ -1,5 +1,8 @@
 {
     "files.associations": {
-        "cub3d.h": "c"
+        "cub3d.h": "c",
+        "mlx.h": "c",
+        "algorithm": "c",
+        "math.h": "c"
     }
 }

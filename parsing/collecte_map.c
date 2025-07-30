@@ -89,11 +89,13 @@ int handle_map(map_cub **map_c)
 		return ft_putstr_fd("ERROR\nplayer not found or multi-player!\n", 2), 0;
 	(*map_c)->player_pos->radius = 3;
 	(*map_c)->player_pos->angle = M_PI / 2;
-	(*map_c)->player_pos->rotation_speed = 2 * (M_PI / 180);
 	(*map_c)->player_pos->forword_backword = 0;
-	(*map_c)->player_pos->leftword_rightword = 0;
-	printf("X:%d\n", (*map_c)->player_pos->position_x);
-	printf("Y:%d\n", (*map_c)->player_pos->position_y);
+	(*map_c)->player_pos->leftvu_rightvu = 0;
+	(*map_c)->player_pos->rotate = 0;
+	(*map_c)->player_pos->player_face = 0;
+	(*map_c)->player_pos->player_fov = 0;
+	// printf("X:%d\n", (*map_c)->player_pos->position_x);
+	// printf("Y:%d\n", (*map_c)->player_pos->position_y);
 	if (!check_close_map(*map_c))
 		return 0;
 	return 1;
