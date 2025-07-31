@@ -8,11 +8,23 @@
 	=========== change the player coordonne===
 */
 
+int	ft_move_check(t_table *table, double x, double y)
+{
+	if (check_top_move(table, x, y)
+		|| check_bottom_move(table, x, y)
+		|| check_left_move(table, x, y)
+		|| check_right_move(table, x, y))
+		return 1;
+	return 0;
+}
+
 void normalize_angle(double *angle)
 {
 	*angle = fmod(*angle, 2 * M_PI);
 	if (*angle < 0)
 		*angle += 2 * M_PI;
+	if (*angle > (2 * M_PI))
+		*angle -= 2 * M_PI;
 }
 
 void check_player_fov(t_table *table, int *ray_leftright, int *ray_updown)
@@ -30,8 +42,10 @@ void check_player_fov(t_table *table, int *ray_leftright, int *ray_updown)
 
 int has_wall_at(t_table *table, float x, float y)
 {
-	int map_inx = (int)(x); // Map row
-	int map_iny = (int)(y); // Map column
+	int map_inx = (x); // Map row
+	int map_iny = (y); // Map column
+	printf("\t\t%f %f\n", x, y);
+	printf("\t\t%d %d\n", map_inx, map_iny);
 	if (map_inx < 0 || map_inx > WINDOW_WIDTH || map_iny < 0 || map_iny > WINDOW_HEIGHT)
 	{
 		printf("Wall check: Out of bounds at (%d, %d)\n", map_inx, map_iny);
@@ -41,7 +55,7 @@ int has_wall_at(t_table *table, float x, float y)
 	if (table->map_stru->dmaps[map_inx][map_iny] == '1')
 		return 1; // Wall
 
-	if (table->map_stru->dmaps[map_inx][map_iny] == '1')
+	if (ft_move_check(table, x, y))
 		return 1; // Wall
 
 	return 0;
@@ -52,42 +66,52 @@ void player_coordonneup(t_table **data)
 	t_table *table = *data;
 
 	table->player_coor->angle += table->player_coor->rotate * ROTATION_SPEED;
-	table->player_coor->angle += table->player_coor->rotate * ROTATION_SPEED; // Define ROTATION_SPEED (e.g., 0.1)
 	if (table->player_coor->angle < 0)
 		table->player_coor->angle += 2 * M_PI;
 	if (table->player_coor->angle >= 2 * M_PI)
 		table->player_coor->angle -= 2 * M_PI;
 
-	float new_x = table->player_coor->position_x;
-	float new_y = table->player_coor->position_y;
-
+	double new_x = table->player_coor->position_x;
+	double new_y = table->player_coor->position_y;
+	printf("..........>>%f\n", table->player_coor->angle);
 	normalize_angle(&table->player_coor->angle);
+	printf(".........>>%f\n", table->player_coor->angle);
 	check_player_fov(table, &table->player_coor->player_fov, &table->player_coor->player_face);
-	// Forward/backward movement (W/S)
+
+
 	if (table->player_coor->forword_backword != 0)
 	{
-		float direction = table->player_coor->forword_backword > 0 ? table->player_coor->angle : table->player_coor->angle + M_PI;
-		new_x += sin(direction) * MOVE_SPEED; // Map row (y-axis in window)
-		new_y += cos(direction) * MOVE_SPEED; // Map column (x-axis in window)
+		double direction;
+		if (table->player_coor->forword_backword > 0)
+			direction = table->player_coor->angle;
+		else
+		{
+			direction = table->player_coor->angle + M_PI;
+		}
+
+		new_x += sin(direction) * MOVE_SPEED;
+		new_y += cos(direction) * MOVE_SPEED;
 		printf("W or S pressed, direction: %f, new_x: %f, new_y: %f\n", direction, new_x, new_y);
 	}
 
-	// Strafe movement (A/D)
 	if (table->player_coor->leftvu_rightvu != 0)
 	{
-		float strafe_angle = table->player_coor->angle + (table->player_coor->leftvu_rightvu > 0 ? M_PI / 2 : -M_PI / 2);
-		new_x += sin(strafe_angle) * MOVE_SPEED; // Strafe right (+π/2) or left (-π/2)
+		double strafe_angle;
+		if (table->player_coor->leftvu_rightvu > 0)
+			strafe_angle = table->player_coor->angle + (M_PI / 2);
+		else
+			strafe_angle = table->player_coor->angle + (-M_PI / 2);
+		new_x += sin(strafe_angle) * MOVE_SPEED;
 		new_y += cos(strafe_angle) * MOVE_SPEED;
 		printf("A or D pressed, strafe_angle: %f, new_x: %f, new_y: %f\n", strafe_angle, new_x, new_y);
 	}
 
-	// Check boundaries and collisions
 	if (!has_wall_at(table, new_x, new_y))
 	{
 		table->player_coor->position_x = new_x;
 		table->player_coor->position_y = new_y;
 		printf("Position updated to (%f, %f)\n", new_x, new_y);
 	}
+
 	printf("\033[0;32m%d\033[0m\n", table->player_coor->player_face);
-	// put_texture(table);
 }

@@ -12,24 +12,28 @@
 #include "../libft/libft.h"
 #include "../get_next_line/get_next_line.h"
 
-#define MOVE_SPEED 0.4
-#define TILE_SIZE 64
+#define MINIMAP_SIZE 160  // Fixed 200x200 minimap
+#define MINIMAP_CENTER (MINIMAP_SIZE / 2)  // Center at (100, 100)
+
+#define MOVE_FAKE 0.1
+#define MOVE_SPEED 0.2
+#define TILE_SIZE 32
 #define MINIMAP_SCALE 0.2
-#define WALL_STRIP_WIDTH 1   //change the distance between the rays
+#define WALL_STRIP_WIDTH 1  //change the distance between the rays
 #define WINDOW_WIDTH 1200
 #define WINDOW_HEIGHT 1200
 #define FOV_ANGLE (M_PI / 3)
 #define NUM_RAYS (WINDOW_WIDTH / WALL_STRIP_WIDTH)
-#define ROTATION_SPEED (2 * (M_PI / 180))
+#define ROTATION_SPEED 9 * (M_PI / 180)// +more for rotation speed (10 * (M_PI / 180))
 
 typedef struct player player;
 typedef struct s_data t_data;
 
 typedef struct s_ray {
-    float rayAngle;
-    float wallHitX;
-    float wallHitY;
-    float distance;
+    double rayAngle;
+    double wallHitX;
+    double wallHitY;
+    double distance;
     int wasHitVertical;
 } t_ray;
 
@@ -53,12 +57,12 @@ typedef struct map_cub
 
 typedef struct player
 {
-	float position_x;
-	float position_y;
+	double position_x;
+	double position_y;
 	int	radius;
 	double angle;
-	int	forword_backword;    // 1 for; -1 back
-	int	leftvu_rightvu;  // 1 lefr; -1 right
+	int	forword_backword;    // 1 top; -1 bottom
+	int	leftvu_rightvu;  // -1 left; 1 right
 	int rotate;
 	int	player_fov;  // 1 left; -1 right;
 	int	player_face;  // 1 top; -1 bottom;
@@ -77,6 +81,7 @@ typedef struct s_taple
     int bpp; // Add this
     int size_line; // Add this
     int endian; // Add this
+	double last_time;
 	map_cub		*map_stru;
 	map_valid	*map_ele;
 	player		*player_coor;
@@ -111,11 +116,18 @@ long	get_time();
 
 int	rander_map(map_valid **map_element, map_cub **map_structure, player **player_coor);
 int	put_texture(t_table *table);
+void normalize_angle(double *angle);
 void	player_coordonneup(t_table **data);
+int	ft_move_check(t_table *table, double x, double y);
 int	get_path_frame(t_table **param);
 int	player_effect(void *param);
 int ft_put_player(t_table **data);
 void normalize_angle(double *angle);
+
+int	check_top_move(t_table *table, double x, double y);
+int	check_bottom_move(t_table *table, double x, double y);
+int	check_left_move(t_table *table, double x, double y);
+int	check_right_move(t_table *table, double x, double y);
 
 void draw_line(t_table *table, int x0, int y0, int x1, int y1, int color);
 void put_pixel(t_table *table, int x, int y, int color);
