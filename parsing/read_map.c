@@ -1,29 +1,30 @@
 #include "../header/cub3d.h"
 
-int ft_handle_path(map_valid *val)
+int	ft_handle_path(map_valid *val)
 {
-	int fd;
-	map_valid *check = val;
-	int i= 0;
+	int			fd;
+	map_valid	*check;
+	int			i;
+
 	if (!val)
-		return 0;
+		return (0);
+	check = val;
+	i = 0;
 	while (check)
 	{
 		if (check->coordonne == 1 && i != 4)
 		{
-			// if ()
-			// 	;
 			printf("check_path:%s\n", check->path);
 			fd = open(check->path, O_RDONLY);
 			if (fd == -1)
-				return ft_putstr_fd("ERROR\nCan't open the file '", 2)
-					, write(2, check->path, ft_strlen(check->path)), write(2, "'\n", 2), 0;
+				return (ft_putstr_fd("ERROR\nCan't open the file '", 2)
+					, write(2, check->path, ft_strlen(check->path)), write(2, "'\n", 2), 0);
 			close(fd);
 			i++;
 		}
 		check = check->next;
 	}
-	return 1;
+	return (1);
 }
 
 int ft_color_rgb(map_valid **map)
@@ -56,8 +57,7 @@ int ft_color_rgb(map_valid **map)
 	if (res[0] && res[1] && res[2])
 		(*map)->color_rgb = ft_atoi(res[0]) << 16 | ft_atoi(res[1]) << 8 | ft_atoi(res[2]) << 0;
 	printf("vv:%X\n", (*map)->color_rgb);
-	free_res(res);
-	return 1;
+	return free_res(res), 1;
 }
 
 int ft_handle_color(map_valid *map)
@@ -81,8 +81,8 @@ int ft_handle_color(map_valid *map)
 					comma++;
 				j++;
 			}
-			if (comma > 2)
-				return ft_putstr_fd("ERROR\nMore Comma\n", 2), 0;
+			if (comma != 2)
+				return ft_putstr_fd("ERROR\nMore or No Comma\n", 2), 0;
 			if (!ft_color_rgb(&color))
 				return 0;
 		}
@@ -231,9 +231,10 @@ int	read_map(char *av)
 		return (ft_putstr_fd("Error\nread function failed!\n", 2), free(map_c), free(map), 0);
 	while (line)
 	{
-		if (map_c->maps && !ft_strcmp(line, "\n"))
+		printf("%s", line);
+		if (line && map_c->maps && !ft_strcmp(line, "\n"))
 			return (free_map_c(map_c), free_map(&map), free_player(map_c->player_pos), close(fd),
-				free(map_c), ft_putstr_fd("Error\nInvalid file (more new lines)!\n", 2), 0);
+				free(map_c), ft_putstr_fd("Error\nInvalid file (more new lines)!\n", 2), printf("%s", line),0);
 		if (!ft_strcmp(line, "\n"))
 		{
 			free(line), line = get_next_line(fd);
@@ -259,9 +260,8 @@ int	read_map(char *av)
 		return free_map_c(map_c), free_map(&map), free_player(map_c->player_pos), free(map_c), 0;
 	if (!creat_2darray(&map_c) || !handle_map(&map_c))
 		return free_map_c(map_c), free_map(&map), free_player(map_c->player_pos), free(map_c), 0;
-	// printf("X:%d\n", map_c->player_pos->position_x);
-	// printf("Y:%d\n", map_c->player_pos->position_y);
 	if (!rander_map(&map, &map_c, &map_c->player_pos))
-		return printf("aaaaaaaaaaaaaa\n"), free_map_c(map_c), free_player(map_c->player_pos), free_map(&map), free(map_c), 0;
-	return 1;//test free's functions. free_map_c(map_c), free_player(map_c->player_pos), free_map(&map), free(map_c), 
+		return free_map_c(map_c), free_player(map_c->player_pos), free_map(&map), free(map_c), 0;
+
+	return free_map_c(map_c), free_player(map_c->player_pos), free_map(&map), free(map_c), 1;
 }

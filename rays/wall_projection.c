@@ -3,9 +3,9 @@
 // int	wall_projection(t_table *table)
 // {
 // 	int		i;
-// 	double	ray_distance;
-// 	double	distance_project;
-// 	double	wall_stripheight;
+// 	float	ray_distance;
+// 	float	distance_project;
+// 	float	wall_stripheight;
 // 	int		floor;
 // 	int		ceiling;
 // 	t_ray	ray;
@@ -59,17 +59,17 @@ int wall_projection(t_table *table)
 			ceiling = map->color_rgb;
 		map = map->next;
 	}
-    double distance_project = (WINDOW_WIDTH / 2) / tan(FOV_ANGLE / 2); // Projection plane distance
+    float distance_project = (WINDOW_WIDTH / 2) / tan(FOV_ANGLE / 2); // Projection plane distance
     for (int i = 0; i < NUM_RAYS; i++)
     {
         // Correct distance for fisheye effect
-        double ray_angle = table->rays[i].rayAngle;
-        double corrected_distance = table->rays[i].distance * cos(ray_angle - table->player_coor->angle);
+        float ray_angle = table->rays[i].rayAngle;
+        float corrected_distance = table->rays[i].distance * cos(ray_angle - table->player_coor->angle);
         if (corrected_distance < 0.1) // Avoid division by near-zero
             corrected_distance = 0.1;
 
         // Calculate wall strip height
-        double wall_stripheight = (TILE_SIZE / corrected_distance) * distance_project;
+        float wall_stripheight = (TILE_SIZE / corrected_distance) * distance_project;
         int top_pixel = (int)(WINDOW_HEIGHT / 2 - wall_stripheight / 2);
         int bottom_pixel = (int)(WINDOW_HEIGHT / 2 + wall_stripheight / 2);
 
@@ -80,7 +80,7 @@ int wall_projection(t_table *table)
             bottom_pixel = WINDOW_HEIGHT - 1;
 
         // Choose color based on hit type
-        int color = 0xFF0000;//table->rays[i].wasHitVertical ? 0x00FF0000 : 0x00808080; // Red for vertical, gray for horizontal
+        int color = 0x202020;//table->rays[i].wasHitVertical ? 0x00FF0000 : 0x00808080; // Red for vertical, gray for horizontal
 
         // Draw ceiling, wall, and floor for this strip
         for (int y = 0; y < WINDOW_HEIGHT; y++)

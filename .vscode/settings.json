@@ -8,6 +8,7 @@
         "__bit_reference": "c",
         "bitset": "c",
         "chrono": "c",
-        "unordered_map": "c"
+        "unordered_map": "c",
+        "__locale": "c"
     }
 }

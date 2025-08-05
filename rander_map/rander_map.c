@@ -57,7 +57,7 @@ int close_window(void *param)
 
 void cast_all_rays(t_table *table)
 {
-    double ray_angle = table->player_coor->angle - (FOV_ANGLE / 2);
+    float ray_angle = table->player_coor->angle - (FOV_ANGLE / 2);
     for (int i = 0; i < NUM_RAYS; i++)
     {
         cast_rays(table, ray_angle, i);
@@ -68,9 +68,9 @@ void cast_all_rays(t_table *table)
 int mainloop(void *param)
 {
     t_table *table = (t_table *)param;
-    put_texture(table);
     ft_put_player(&table);
     cast_all_rays(table);
+    put_texture(table);
     return 0;
 }
 
@@ -90,7 +90,7 @@ int rander_map(map_valid **map_element, map_cub **map_structure, player **player
     table->width = ft_strlen(table->map_stru->dmaps[0]);
     table->height = count_height(table->map_stru->dmaps);
 
-    data2->current_time = get_time();
+    // data2->current_time = get_time();
     data2->frame_id = 0;
     data2->img = NULL;
 

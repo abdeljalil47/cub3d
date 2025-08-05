@@ -40,7 +40,7 @@ int check_map_isvalid(map_cub *map_c)
 			if (map_c->dmaps[i][y] != '0' && map_c->dmaps[i][y] != '1'
 				&& map_c->dmaps[i][y] != 'N' && map_c->dmaps[i][y] != ' '
 				&& map_c->dmaps[i][y] != 'S' && map_c->dmaps[i][y] != 'E'
-				&& map_c->dmaps[i][y] != 'W')
+				&& map_c->dmaps[i][y] != 'W' && map_c->dmaps[i][y] != 'D')
 				return 0;
 			y++;
 		}
@@ -49,12 +49,12 @@ int check_map_isvalid(map_cub *map_c)
 	return 1;
 }
 
-int find_player(map_cub **map)
+int	find_player(map_cub **map)
 {
-	int x;
-	int y;
-	map_cub *map_c;
-	int flag;
+	int		x;
+	int		y;
+	map_cub	*map_c;
+	int		flag;
 
 	map_c = *map;
 	y = 0;
@@ -68,8 +68,7 @@ int find_player(map_cub **map)
 			if (map_c->dmaps[x][y] == 'N' || map_c->dmaps[x][y] == 'S'
 				|| map_c->dmaps[x][y] == 'W' || map_c->dmaps[x][y] == 'E')
 			{
-				flag++;
-				(*map)->player_pos->position_x = x;
+				flag++, (*map)->player_pos->position_x = x;
 				(*map)->player_pos->position_y = y;
 			}
 			y++;
@@ -81,22 +80,42 @@ int find_player(map_cub **map)
 	return (1);
 }
 
+float	ft_determinate_playerangle(map_cub **map)
+{
+	int	x;
+	int	y;
+
+	x = (int)(*map)->player_pos->position_x;
+	y = (int)(*map)->player_pos->position_y;
+	if ((*map)->dmaps[x][y] == 'N')
+		return M_PI / 2;
+	if ((*map)->dmaps[x][y] == 'S')
+		return -M_PI / 2;
+	if ((*map)->dmaps[x][y] == 'E')
+		return 0;
+	if ((*map)->dmaps[x][y] == 'W')
+		return M_PI;
+	return -1;
+}
+
 int handle_map(map_cub **map_c)
 {
 	if (!check_map_isvalid(*map_c))
 		return ft_putstr_fd("ERROR\nmap not valid!\n", 2), 0;
 	if (!find_player(map_c))
 		return ft_putstr_fd("ERROR\nplayer not found or multi-player!\n", 2), 0;
+	if (!check_close_map(*map_c))
+		return 0;
+	// if (!check_door(*map_c))
+		// return ft_putstr_fd("ERROR\nDoor place not valid!\n", 2), 0;
 	(*map_c)->player_pos->radius = 3;
-	(*map_c)->player_pos->angle = M_PI / 2;
+	(*map_c)->player_pos->angle = ft_determinate_playerangle(map_c);
 	(*map_c)->player_pos->forword_backword = 0;
 	(*map_c)->player_pos->leftvu_rightvu = 0;
 	(*map_c)->player_pos->rotate = 0;
 	(*map_c)->player_pos->player_face = 0;
 	(*map_c)->player_pos->player_fov = 0;
-	// printf("X:%d\n", (*map_c)->player_pos->position_x);
-	// printf("Y:%d\n", (*map_c)->player_pos->position_y);
-	if (!check_close_map(*map_c))
-		return 0;
+	printf("X:%f\n", (*map_c)->player_pos->position_x);
+	printf("Y:%f\n", (*map_c)->player_pos->position_y);
 	return 1;
 }

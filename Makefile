@@ -1,5 +1,5 @@
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -Ofast
+CFLAGS = -Wall -Wextra -Werror -fsanitize=address
 MLXLIB = -lmlx -framework OpenGL -framework AppKit
 
 SRC = parsing/pars_map.c cub3d.c get_next_line/get_next_line.c get_next_line/get_next_line_utils.c \

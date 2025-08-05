@@ -59,8 +59,8 @@
 // 	// 	}
 // 	// }
 	
-// 	// double line_length = radius * 40; // Reduced length for better visibility
-// 	// double left_angle = table->player_coor->angle - FOV_ANGLE / 2;
+// 	// float line_length = radius * 40; // Reduced length for better visibility
+// 	// float left_angle = table->player_coor->angle - FOV_ANGLE / 2;
 // 	// int x = 0;
 // 	// while (x < NUM_RAYS)
 // 	// {
@@ -95,47 +95,40 @@
 
 // int put_texture(t_table *table)
 // {
-// 	int i = 0;
-// 	// int i = table->player_coor->position_x;
-// 	int y;
-
-// 	// Clear image buffer
 // 	for (int py = 0; py < WINDOW_HEIGHT; py++)
 // 		for (int px = 0; px < WINDOW_WIDTH; px++)
 // 			put_pixel(table, px, py, 0x000000);
 
-// 	wall_projection(table);
+// 	// wall_projection(table);
 
-// 	// Draw map
-// 	while (table->map_stru->dmaps[i])
-// 	{
-// 		y = 0;
-// 		while (table->map_stru->dmaps[i][y])
-// 		{
-// 			if (!put_element(table, table->map_stru->dmaps[i][y], i, y))
-// 				return 0;
-// 			y++;
-// 		}
-// 		i++;
-// 	}
+// 	for (int i = 0; table->map_stru->dmaps[i]; i++)
+// 		for (int y = 0; table->map_stru->dmaps[i][y]; y++)
+// 			put_element(table, table->map_stru->dmaps[i][y], i, y);
+
 // 	for (int i = 0; i < NUM_RAYS; i++)
+// 	{
 // 		if (table->rays[i].wallHitX && table->rays[i].wallHitY)
-// 			draw_line(table, table->player_coor->position_y * MINIMAP_SCALE * TILE_SIZE,
-// 					  table->player_coor->position_x * MINIMAP_SCALE * TILE_SIZE,
-// 					  table->rays[i].wallHitX * MINIMAP_SCALE,
-// 					  table->rays[i].wallHitY * MINIMAP_SCALE,
-// 					  0x00FCF803);
-// 	// Draw player
+// 		{
+// 			int player_x = table->player_coor->position_y * MINIMAP_SCALE * TILE_SIZE;
+// 			int player_y = table->player_coor->position_x * MINIMAP_SCALE * TILE_SIZE;
+
+// 			int ray_x = (table->rays[i].wallHitX / TILE_SIZE) * MINIMAP_SCALE * TILE_SIZE;
+// 			int ray_y = (table->rays[i].wallHitY / TILE_SIZE) * MINIMAP_SCALE * TILE_SIZE;
+
+// 			draw_line(table, player_x, player_y, ray_x, ray_y, 0x00FCF803);
+// 		}
+// 	}
+
 // 	if (!ft_put_player(&table))
 // 		return 0;
 
-// 	// Draw image to window
 // 	mlx_put_image_to_window(table->mlx, table->mlx_win, table->img, 0, 0);
 // 	return 1;
 // }
 
 
-// General put_pixel for full window (used by wall_projection)
+
+// // General put_pixel for full window (used by wall_projection)
 void put_pixel(t_table *table, int x, int y, int color)
 {
     if (x >= 0 && x < WINDOW_WIDTH && y >= 0 && y < WINDOW_HEIGHT)
@@ -200,7 +193,7 @@ int ft_put_player(t_table **data)
 
 	    // Draw single FOV line (middle of FOV, along player_angle)
     int line_length = 18; // Pixels in minimap
-    double player_angle = table->player_coor->angle;
+    float player_angle = table->player_coor->angle;
     int blue_color = 0x000000FF; // Blue line
     // Calculate endpoint using player_angle
     int end_x = center_x + (int)(cos(player_angle) * line_length);
@@ -217,8 +210,8 @@ int put_element(t_table *table, char c, int x, int y)
 
     int color = 0x00FFFFFF; // Red walls
     // Player's world position in pixels (world coords * tile size)
-    double player_px = table->player_coor->position_y * TILE_SIZE;
-    double player_py = table->player_coor->position_x * TILE_SIZE;
+    float player_px = table->player_coor->position_y * TILE_SIZE;
+    float player_py = table->player_coor->position_x * TILE_SIZE;
 
     // World coordinates of the tile's top-left corner
     int tile_world_x = y * TILE_SIZE; // Map column (y) to world x
@@ -268,8 +261,8 @@ int put_texture(t_table *table)
     }
 
     // Draw rays
-    // double player_px = table->player_coor->position_y * TILE_SIZE;
-    // double player_py = table->player_coor->position_x * TILE_SIZE;
+    // float player_px = table->player_coor->position_y * TILE_SIZE;
+    // float player_py = table->player_coor->position_x * TILE_SIZE;
     // for (int i = 0; i < NUM_RAYS; i++)
     // {
     //     if (table->rays[i].wallHitX && table->rays[i].wallHitY)
