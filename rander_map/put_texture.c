@@ -174,58 +174,88 @@ void draw_line(t_table *table, int x0, int y0, int x1, int y1, int color)
         }
     }
 }
+int get_inverse_color(int color, char type)
+{
+    int r = 0;
+    int g = 0;
+    int b = 0;
+    if(type == 'M')
+    {
+        r = 255 - ((color >> 16) & 0xFF);
+        g = 255 - ((color >> 8) & 0xFF);
+        b = 255 - (color & 0xFF);
+    }
+      else if (type == 'P')
+    {
+        int temp = r;
+        r = (b + 100) % 256;
+        g = (g + 60) % 256;
+        b = (temp + 30) % 256;
+    }
+    return (r << 16) | (g << 8) | b;
+}
+
 
 int ft_put_player(t_table **data)
 {
+    // printf("\033[0;32m-------->>%d\033[0m\n", (*data)->open_door);
     t_table *table = *data;
-    int color = 0x000000FF; // White player
+    int color = get_inverse_color(find_ceiling_floor(table, 'C'), 'P');
     int radius = table->player_coor->radius;
     if (radius <= 0 || radius > 16)
         radius = 8;
-    int center_x = MINIMAP_CENTER; // Fixed at 100
-    int center_y = MINIMAP_CENTER; // Fixed at 100
+    int center_x = MINIMAP_CENTER;
+    int center_y = MINIMAP_CENTER;
 
-    // Draw player as a circle
     for (int i = -radius; i <= radius; i++)
         for (int j = -radius; j <= radius; j++)
             if (i * i + j * j <= radius * radius)
-                put_pixel_minimap(table, center_x + j, center_y + i, color); // Use minimap clipping
+                put_pixel_minimap(table, center_x + j, center_y + i, color); 
 
-	    // Draw single FOV line (middle of FOV, along player_angle)
-    int line_length = 18; // Pixels in minimap
+    int line_length = 18;
     float player_angle = table->player_coor->angle;
-    int blue_color = 0x000000FF; // Blue line
-    // Calculate endpoint using player_angle
+    int blue_color = get_inverse_color(find_ceiling_floor(table, 'C'), 'P');
     int end_x = center_x + (int)(cos(player_angle) * line_length);
     int end_y = center_y + (int)(sin(player_angle) * line_length);
     draw_line(table, center_x, center_y, end_x, end_y, blue_color);
 
     return 1;
 }
+void draw_minimap_background(t_table *table)
+{
+    for (int py = 0; py < MINIMAP_SIZE; py++)
+    {
+        for (int px = 0; px < MINIMAP_SIZE; px++)
+        {
+            put_pixel_minimap(table, px, py, 0x607ea6); // black background
+        }
+    }
+}
 
 int put_element(t_table *table, char c, int x, int y)
 {
-    if (c != '1')
-        return 1; // Only draw walls
+    int color;
 
-    int color = 0x00FFFFFF; // Red walls
-    // Player's world position in pixels (world coords * tile size)
+    if (c == 'D')
+    {
+        color = 0xFFEA00; 
+        table->door_exist = true; 
+    }
+    else if (c == '1')
+        color = get_inverse_color(find_ceiling_floor(table, 'C'), 'M');
+    else
+        return 1;
     float player_px = table->player_coor->position_y * TILE_SIZE;
     float player_py = table->player_coor->position_x * TILE_SIZE;
 
-    // World coordinates of the tile's top-left corner
-    int tile_world_x = y * TILE_SIZE; // Map column (y) to world x
-    int tile_world_y = x * TILE_SIZE; // Map row (x) to world y
+    int tile_world_x = y * TILE_SIZE; 
+    int tile_world_y = x * TILE_SIZE; 
 
-    // Offset relative to player, scaled to minimap
     int offset_x = (tile_world_x - player_px) * MINIMAP_SCALE;
     int offset_y = (tile_world_y - player_py) * MINIMAP_SCALE;
 
-    // Map to minimap coordinates (center player at 100,100)
     int start_x = MINIMAP_CENTER + offset_x;
     int start_y = MINIMAP_CENTER + offset_y;
-
-    // Draw scaled tile
     int scaled_tile = (int)(TILE_SIZE * MINIMAP_SCALE);
     for (int dy = 0; dy < scaled_tile; dy++)
     {
@@ -233,22 +263,22 @@ int put_element(t_table *table, char c, int x, int y)
         {
             int pixel_x = start_x + dx;
             int pixel_y = start_y + dy;
-            put_pixel_minimap(table, pixel_x, pixel_y, color); // Use minimap clipping
+            put_pixel_minimap(table, pixel_x, pixel_y, color);
         }
     }
+
     return 1;
 }
 
 int put_texture(t_table *table)
 {
-    // Clear minimap region
     for (int py = 0; py < MINIMAP_SIZE; py++)
         for (int px = 0; px < MINIMAP_SIZE; px++)
-            put_pixel_minimap(table, px, py, 0x000000); // Black background
+            put_pixel_minimap(table, px, py, 0x000000);
 
-    // Draw map
     int i = 0;
     wall_projection(table);
+    draw_minimap_background(table);//draw the background of the map
     while (table->map_stru->dmaps[i])
     {
         int y = 0;
@@ -260,7 +290,6 @@ int put_texture(t_table *table)
         i++;
     }
 
-    // Draw rays
     // float player_px = table->player_coor->position_y * TILE_SIZE;
     // float player_py = table->player_coor->position_x * TILE_SIZE;
     // for (int i = 0; i < NUM_RAYS; i++)

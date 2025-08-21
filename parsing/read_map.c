@@ -14,7 +14,6 @@ int	ft_handle_path(map_valid *val)
 	{
 		if (check->coordonne == 1 && i != 4)
 		{
-			printf("check_path:%s\n", check->path);
 			fd = open(check->path, O_RDONLY);
 			if (fd == -1)
 				return (ft_putstr_fd("ERROR\nCan't open the file '", 2)
@@ -39,7 +38,6 @@ int ft_color_rgb(map_valid **map)
 	while (res[i])
 	{
 		j = 0;
-		printf("%d\n", ft_atoi(res[i]));
 		while (res[i][j])
 		{
 			if (res[i][j] == '+' || res[i][j] == '-')
@@ -54,9 +52,10 @@ int ft_color_rgb(map_valid **map)
 			return ft_putstr_fd("ERROR\nOut of range RGB '[0 - 255]'\n", 2), free_res(res), 0;
 		i++;
 	}
+	if (count_height(res) != 3)
+		return free_res(res), ft_putstr_fd("ERROR\nNot enough arguments\n", 2), 0;
 	if (res[0] && res[1] && res[2])
 		(*map)->color_rgb = ft_atoi(res[0]) << 16 | ft_atoi(res[1]) << 8 | ft_atoi(res[2]) << 0;
-	printf("vv:%X\n", (*map)->color_rgb);
 	return free_res(res), 1;
 }
 
@@ -231,7 +230,6 @@ int	read_map(char *av)
 		return (ft_putstr_fd("Error\nread function failed!\n", 2), free(map_c), free(map), 0);
 	while (line)
 	{
-		printf("%s", line);
 		if (line && map_c->maps && !ft_strcmp(line, "\n"))
 			return (free_map_c(map_c), free_map(&map), free_player(map_c->player_pos), close(fd),
 				free(map_c), ft_putstr_fd("Error\nInvalid file (more new lines)!\n", 2), printf("%s", line),0);

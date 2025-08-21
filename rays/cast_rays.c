@@ -7,18 +7,34 @@ int has_wall_at_for_ray(t_table *table, float x, float y)
 
     if (map_x < 0 || map_y < 0)
         return 1;
+
     if (map_y >= table->height || map_x >= (int)ft_strlen(table->map_stru->dmaps[map_y]))
         return 1;
+
     if (!table->map_stru || !table->map_stru->dmaps)
         return 1;
 
-    return table->map_stru->dmaps[map_y][map_x] == '1';
+    char cell = table->map_stru->dmaps[map_y][map_x];
+
+    if (cell == '1')
+        return 1;          // wall blocks rays
+
+    if (cell == 'D')
+    {
+        if (table->open_door == 0)
+            return 2;      // closed door blocks rays
+        else
+            return 0;      // open door = empty space, ray continues
+    }
+    return 0;              // empty
 }
+
 
 int find_map_width(char **dmaps)
 {
     int max = 0;
-    for (int i = 0; dmaps[i]; i++) {
+    for (int i = 0; dmaps[i]; i++)
+    {
         int len = ft_strlen(dmaps[i]);
         if (len > max)
             max = len;
@@ -28,24 +44,16 @@ int find_map_width(char **dmaps)
 
 int cast_rays(t_table *table, float ray_angle, int columnid)
 {
-    ray_angle = fmod(ray_angle, 2 * M_PI);
-    if (ray_angle < 0)
-        ray_angle += 2 * M_PI;
-
+    normalize_angle(&ray_angle);
     float playerX = table->player_coor->position_y * TILE_SIZE;
     float playerY = table->player_coor->position_x * TILE_SIZE;
-
-    float sin_angle = sin(ray_angle);
-    float cos_angle = cos(ray_angle);
-    if (fabs(sin_angle) < 0.0001) sin_angle = 0.0001;
-    if (fabs(cos_angle) < 0.0001) cos_angle = 0.0001;
 
     int foundHorzWallHit = 0;
     float horzWallHitX = 0;
     float horzWallHitY = 0;
     float horzHitDistance = 1000000;
     int facingup = ray_angle > M_PI;
-    float yintercept = floor(playerY / TILE_SIZE) * TILE_SIZE + (facingup ? -0.001 : TILE_SIZE);
+    float yintercept = floor(playerY / TILE_SIZE) * TILE_SIZE + (facingup ? -0 : TILE_SIZE);
     float xintercept = playerX + (yintercept - playerY) / tan(ray_angle);
     float ysteps = facingup ? -TILE_SIZE : TILE_SIZE;
     float xsteps = ysteps / tan(ray_angle);
@@ -58,12 +66,15 @@ int cast_rays(t_table *table, float ray_angle, int columnid)
     while (!foundHorzWallHit && nextHorzX >= 0 && nextHorzX < max_map_x && nextHorzY >= 0 && nextHorzY < max_map_y)
     {
         float checkY = nextHorzY + (facingup ? -1 : 0);
-        if (has_wall_at_for_ray(table, nextHorzX, checkY))
+        int hitCode = has_wall_at_for_ray(table, nextHorzX, checkY);
+        // if (has_wall_at_for_ray(table, nextHorzX, checkY))
+        if (hitCode > 0)
         {
-            foundHorzWallHit = 1;
+            foundHorzWallHit = hitCode;
             horzWallHitX = nextHorzX;
             horzWallHitY = nextHorzY;
             horzHitDistance = sqrt((playerX - horzWallHitX) * (playerX - horzWallHitX) + (playerY - horzWallHitY) * (playerY - horzWallHitY));
+            break;
         }
         else
         {
@@ -77,7 +88,7 @@ int cast_rays(t_table *table, float ray_angle, int columnid)
     float vertWallHitY = 0;
     float vertHitDistance = 1000000;
     int facingleft = ray_angle > M_PI_2 && ray_angle < 3 * M_PI_2;
-    xintercept = floor(playerX / TILE_SIZE) * TILE_SIZE + (facingleft ? -0.001 : TILE_SIZE);
+    xintercept = floor(playerX / TILE_SIZE) * TILE_SIZE + (facingleft ? -0 : TILE_SIZE);
     yintercept = playerY + (xintercept - playerX) * tan(ray_angle);
     xsteps = facingleft ? -TILE_SIZE : TILE_SIZE;
     ysteps = xsteps * tan(ray_angle);
@@ -87,12 +98,15 @@ int cast_rays(t_table *table, float ray_angle, int columnid)
     while (!foundVertWallHit && nextVertX >= 0 && nextVertX < max_map_x && nextVertY >= 0 && nextVertY < max_map_y)
     {
         float checkX = nextVertX + (facingleft ? -1 : 0);
-        if (has_wall_at_for_ray(table, checkX, nextVertY))
+        int hitCode = has_wall_at_for_ray(table, checkX, nextVertY);
+        // if (has_wall_at_for_ray(table, checkX, nextVertY))
+        if (hitCode > 0)
         {
-            foundVertWallHit = 1;
+            foundVertWallHit = hitCode;
             vertWallHitX = nextVertX;
             vertWallHitY = nextVertY;
             vertHitDistance = sqrt((playerX - vertWallHitX) * (playerX - vertWallHitX) + (playerY - vertWallHitY) * (playerY - vertWallHitY));
+            break;
         }
         else
         {
@@ -108,6 +122,7 @@ int cast_rays(t_table *table, float ray_angle, int columnid)
         wallHitY = horzWallHitY;
         table->rays[columnid].wasHitVertical = 0;
         table->rays[columnid].distance = horzHitDistance;
+        table->rays[columnid].hittype = foundHorzWallHit; // wall or door
     }
     else if (foundVertWallHit)
     {
@@ -115,17 +130,17 @@ int cast_rays(t_table *table, float ray_angle, int columnid)
         wallHitY = vertWallHitY;
         table->rays[columnid].wasHitVertical = 1;
         table->rays[columnid].distance = vertHitDistance;
+        table->rays[columnid].hittype = foundVertWallHit;
     }
+
     else
-    {
         return 0;
-    }
 
     table->rays[columnid].rayAngle = ray_angle;
     table->rays[columnid].wallHitX = wallHitX;
     table->rays[columnid].wallHitY = wallHitY;
 
-    draw_line(table, playerX, playerY, wallHitX, wallHitY, 0x00FCF803);
+    // draw_line(table, playerX, playerY, wallHitX, wallHitY, 0x00FCF803);
 
     return 1;
 }
