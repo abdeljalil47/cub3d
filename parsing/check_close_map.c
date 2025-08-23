@@ -1,39 +1,48 @@
 #include "../header/cub3d.h"
 
+int	ischaracters(char *line)
+{
+    int	i;
+
+	i = 0;
+    while (line[i] && !(line[i] == 32 || (line[i] >= 9 && line[i] <= 13)))
+        i++;
+    return (i);
+}
+
 int	parce_lines(char *tmp, char *prev, char *next, int j)
 {
-	int i;
-
-	if (!tmp || !prev || !next)//top left right bottom
-		return 0;
-	i = j;
-	// printf("tmp:%s\n", tmp);
-	while (tmp[i])
+	if (!tmp || !prev || !next)
+		return (0);
+	while (tmp[j])
 	{
-		if (tmp[i] == '1')
+		if (tmp[j] == '1')
 		{
-			i++;
+			j++;
 			continue;
 		}
-		if ((tmp[i] == '0' || tmp[i] == 'N' || tmp[i] == 'S' || tmp[i] == 'E' || tmp[i] == 'W' || tmp[i] == 'D')
-			&& (((int)ft_strlen(prev) < i) || (prev[i] != '1' && prev[i] != '0' && prev[i] != 'D'
-			&& prev[i] != 'N' && prev[i] != 'S' && prev[i] != 'E' && prev[i] != 'W'))) //top
-			return 0;
-		if ((tmp[i] == '0' || tmp[i] == 'N' || tmp[i] == 'S' || tmp[i] == 'E' || tmp[i] == 'W' || tmp[i] == 'D')
-			&& (tmp[i + 1] != '0' && tmp[i + 1] != '1' && tmp[i + 1] != 'D'
-			&& tmp[i + 1] != 'N' && tmp[i + 1] != 'S' && tmp[i + 1] != 'E' && tmp[i + 1] != 'W')) //left
-			return 0;
-		if ((tmp[i] == '0' || tmp[i] == 'N' || tmp[i] == 'S' || tmp[i] == 'E' || tmp[i] == 'W' || tmp[i] == 'D')
-			&& (tmp[i - 1] != '0' && tmp[i - 1] != '1' && tmp[i - 1] != 'D'
-			&& tmp[i - 1] != 'N' && tmp[i - 1] != 'S' && tmp[i - 1] != 'E' && tmp[i - 1] != 'W')) //right
-			return 0;
-		if ((tmp[i] == '0' || tmp[i] == 'N' || tmp[i] == 'S' || tmp[i] == 'E' || tmp[i] == 'W' || tmp[i] == 'D')
-			&& (((int)ft_strlen(next) < i) || (next[i] != '1' && next[i] != '0' && next[i] != 'D'
-			&& next[i] != 'N' && next[i] != 'S' && next[i] != 'E' && next[i] != 'W'))) //bottom
-			return 0;
-		i++;
+		if (!check_prev(j, tmp, prev, next))
+			return (0);
+		j++;
 	}
-	return 1;
+	return (1);
+}
+
+int	check_bpund_map(map_cub *map, int i)
+{
+	if (i == 0 && (ft_strchr(map->dmaps[i], '0')
+			|| ft_strchr(map->dmaps[i], 'S')
+			|| ft_strchr(map->dmaps[i], 'N') || ft_strchr(map->dmaps[i], 'E')
+			|| ft_strchr(map->dmaps[i], 'W')))
+		return (ft_putstr_fd("ERROR\nPlayer in wrong place or \
+invalid structure of walls!\n", 2), 0);
+	if ((map->dmaps[i + 1] == NULL) && (ft_strchr(map->dmaps[i], '0')
+			|| ft_strchr(map->dmaps[i], 'S')
+			|| ft_strchr(map->dmaps[i], 'N') || ft_strchr(map->dmaps[i], 'E')
+			|| ft_strchr(map->dmaps[i], 'W')))
+		return (ft_putstr_fd("ERROR\nPlayer in wrong place or \
+invalid structure of walls!\n", 2), 0);
+	return (1);
 }
 
 int	check_close_map(map_cub *map)
@@ -44,20 +53,16 @@ int	check_close_map(map_cub *map)
 	i = 0;
 	while (map->dmaps[i])
 	{
-		if (i == 0 && (ft_strchr(map->dmaps[i], '0') || ft_strchr(map->dmaps[i], 'S')
-			|| ft_strchr(map->dmaps[i], 'N') || ft_strchr(map->dmaps[i], 'E') || ft_strchr(map->dmaps[i], 'W')))
-			return ft_putstr_fd("ERROR\nPlayer in wrong place or invalid structure of walls!\n", 2), 0;
-		if ((map->dmaps[i + 1] == NULL) && (ft_strchr(map->dmaps[i], '0') || ft_strchr(map->dmaps[i], 'S')
-			|| ft_strchr(map->dmaps[i], 'N') || ft_strchr(map->dmaps[i], 'E') || ft_strchr(map->dmaps[i], 'W')))
-			return ft_putstr_fd("ERROR\nPlayer in wrong place or invalid structure of walls!\n", 2), 0;
+		if (!check_bpund_map(map, i))
+			return (0);
 		j = 0;
 		while ((i != 0 || map->dmaps[i + 1] == NULL) && map->dmaps[i][j])
 		{
 			if (map->dmaps[i][j] == '0' || map->dmaps[i][j] == 'N' || map->dmaps[i][j] == 'S'
-				|| map->dmaps[i][j] == 'W' || map->dmaps[i][j] == 'E' || map->dmaps[i][j] == 'D')
+				|| map->dmaps[i][j] == 'W' || map->dmaps[i][j] == 'E')
 			{
 				if (!parce_lines(map->dmaps[i], map->dmaps[i - 1], map->dmaps[i + 1], j))
-					return ft_putstr_fd("ERROR\nWorng palcing the map structure!\n", 2), 0;
+					return (ft_putstr_fd("ERROR\nWorng palcing the map structure!\n", 2), 0);
 				else
 					break;
 			}
@@ -65,5 +70,32 @@ int	check_close_map(map_cub *map)
 		}
 		i++;
 	}
-	return 1;
+	return (1);
+}
+
+int	ft_handle_path(map_valid *val)
+{
+	int			fd;
+	map_valid	*check;
+	int			i;
+
+	if (!val)
+		return (0);
+	check = val;
+	i = 0;
+	while (check)
+	{
+		if (check->coordonne == 1 && i != 4)
+		{
+			fd = open(check->path, O_RDONLY);
+			if (fd == -1)
+				return (ft_putstr_fd("ERROR\nCan't open the file '", 2)
+					, write(2, check->path, ft_strlen(check->path))
+					, write(2, "'\n", 2), 0);
+			close(fd);
+			i++;
+		}
+		check = check->next;
+	}
+	return (1);
 }

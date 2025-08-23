@@ -7,26 +7,12 @@ int has_wall_at_for_ray(t_table *table, float x, float y)
 
     if (map_x < 0 || map_y < 0)
         return 1;
-
     if (map_y >= table->height || map_x >= (int)ft_strlen(table->map_stru->dmaps[map_y]))
         return 1;
-
     if (!table->map_stru || !table->map_stru->dmaps)
         return 1;
 
-    char cell = table->map_stru->dmaps[map_y][map_x];
-
-    if (cell == '1')
-        return 1;          // wall blocks rays
-
-    if (cell == 'D')
-    {
-        if (table->open_door == 0)
-            return 2;      // closed door blocks rays
-        else
-            return 0;      // open door = empty space, ray continues
-    }
-    return 0;              // empty
+    return table->map_stru->dmaps[map_y][map_x] == '1';
 }
 
 

@@ -198,7 +198,6 @@ int get_inverse_color(int color, char type)
 
 int ft_put_player(t_table **data)
 {
-    // printf("\033[0;32m-------->>%d\033[0m\n", (*data)->open_door);
     t_table *table = *data;
     int color = get_inverse_color(find_ceiling_floor(table, 'C'), 'P');
     int radius = table->player_coor->radius;
@@ -236,12 +235,7 @@ int put_element(t_table *table, char c, int x, int y)
 {
     int color;
 
-    if (c == 'D')
-    {
-        color = 0xFFEA00; 
-        table->door_exist = true; 
-    }
-    else if (c == '1')
+    if (c == '1')
         color = get_inverse_color(find_ceiling_floor(table, 'C'), 'M');
     else
         return 1;
@@ -269,6 +263,7 @@ int put_element(t_table *table, char c, int x, int y)
 
     return 1;
 }
+
 
 int put_texture(t_table *table)
 {

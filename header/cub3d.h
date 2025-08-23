@@ -13,8 +13,6 @@
 #include "../libft/libft.h"
 #include "../get_next_line/get_next_line.h"
 
-#define MINIMAP_SIZE 160  // Fixed 200x200 minimap
-#define MINIMAP_CENTER (MINIMAP_SIZE / 2)  // Center at (100, 100)
 #define MOVE_FAKE 10
 #define MOVE_SPEED 15
 #define TILE_SIZE 64
@@ -25,7 +23,13 @@
 #define WINDOW_HEIGHT 1200
 #define FOV_ANGLE (M_PI / 3)
 #define NUM_RAYS (WINDOW_WIDTH / WALL_STRIP_WIDTH)
-#define ROTATION_SPEED (6 * (M_PI / 180))// +more for rotation speed (10 * (M_PI / 180))
+#define ROTATION_SPEED (5 * (M_PI / 180))// +more for rotation speed (10 * (M_PI / 180))
+#define MINIMAP_SIZE (WINDOW_WIDTH * 0.16)  // Fixed 200x200 minimap
+#define MINIMAP_CENTER (MINIMAP_SIZE / 2)  // Center at (100, 100)
+
+#define HAND_FRAMES_KNIFE 23
+#define HAND_FRAMES_KNIFE_MV 30
+#define HAND_ANIM_SPEED 0.2
 
 typedef struct player player;
 typedef struct s_data t_data;
@@ -40,10 +44,6 @@ typedef struct s_ray
 	int		hittype; // 0 = none, 1 is wall, 2 is door
 } t_ray;
 
-
-#define HAND_FRAMES_KNIFE 23
-#define HAND_FRAMES_KNIFE_MV 30
-#define HAND_ANIM_SPEED 0.2
 
 typedef struct map_valid
 {
@@ -84,6 +84,8 @@ typedef struct s_texture
 	int width;
 	int height;
 } t_texture;
+t_texture hand_frames[HAND_FRAMES_KNIFE];
+t_texture hand_frames_mv[HAND_FRAMES_KNIFE_MV];
 typedef struct s_texture_path
 {
 	char *NO;
@@ -107,8 +109,6 @@ typedef struct s_taple
 {
 	void		*mlx;
 	void		*mlx_win;
-	void		*wall_img;
-	void		*player;
 	int			width;
 	int			height;
 	t_texture	wall_texture;
@@ -118,31 +118,38 @@ typedef struct s_taple
     int bpp;
     int size_line;
     int endian;
-	int				open_door;
 	t_texture textures[5];
 	t_texture   hand_frames[5];
 	t_hand_anim hand_anim;
 	    int current_frame;
     int anim_counter;
-	bool door_exist;
 	map_cub		*map_stru;
 	map_valid	*map_ele;
 	player		*player_coor;
-	t_data		*data;
 	t_ray		rays[NUM_RAYS];
-	int flag;
 } t_table;
 
 int		check_map_extention(char *av);
 int		check_texture_extention(map_valid *texture);
 int		read_map(char *av);
 void	init_map(map_valid **map, char **value);
-char	ft_putnbr_base(long nbr, const char *base);
 void    collecte_map(char *line, map_cub **map);
 int		creat_2darray(map_cub **map_c);
 int		handle_map(map_cub **map_c);
 int		check_close_map(map_cub *map);
-int check_type(char **res, int flag);
+int		check_type(char **res, int flag);
+int		check_prev(int j, char *tmp, char *prev, char *next);
+int		check_map_isvalid(map_cub *map_c);
+int		check_map_bound(char **map);
+int		check_door_with_wall(char **maps);
+int		check_type_cordonnes(map_valid *lst);
+int		handle_cordonnes(char *line, map_valid **map);
+int		read_lines(char *av, map_valid **map, map_cub **map_c, int i);
+int	ft_handle_color(map_valid *map);
+int	ft_handle_path(map_valid *val);
+int	ischaracters(char *line);
+
+
 
 int count_height(char **line);
 int find_map_width(char **dmaps);
@@ -155,7 +162,6 @@ int	ft_move_check(t_table *table, float x, float y);
 int ft_put_player(t_table **data);
 void normalize_angle(float *angle);
 
-int open_door(t_table *data);
 
 int	check_top_move(t_table *table, float x, float y);
 int	check_bottom_move(t_table *table, float x, float y);
@@ -171,12 +177,16 @@ int	wall_projection(t_table *table);
 int weapon(t_table *table, char *type_mv);
 
 int	count_height(char **line);
+void print_window_error(void);
 
 void	free_res(char **res);
 void	free_map(map_valid **map);
 void	free_map_c(map_cub *map);
 void	free_player(player *player);
+void	clean_beforeout(t_table **ptable);
+void	clean_close(t_table **ptable);
+
 
 int		find_ceiling_floor(t_table *table, char type);
-
+int get_texture_pixel(t_texture *texture, int tex_x, int tex_y);
 #endif

@@ -4,6 +4,8 @@ void	free_res(char **res)
 {
 	int	i;
 
+	if (!res)
+		return ;
 	i = -1;
 	while (res[++i])
 	{

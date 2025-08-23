@@ -1,12 +1,12 @@
 #include "../header/cub3d.h"
 
-void	free_map(map_valid **maps)
+void    free_map(map_valid **maps)
 {
     map_valid	*tmp;
     map_valid	*map;
 
     if (maps == NULL)
-        return;
+        return ;
     map = *maps;
     while (map)
     {

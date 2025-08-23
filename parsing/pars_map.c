@@ -26,7 +26,7 @@ int	check_map_extention(char *av)
 		return (ft_putstr_fd("Error\nInvalid map\n", 2), 0);
 	if (ft_strcmp(ft_str_extantion(av, '.'), ".cub") != 0)
 		return (ft_putstr_fd("Error\nInvalid map\n", 2), 0);
-	return read_map(av);
+	return (read_map(av));
 }
 
 int	check_texture_extention(map_valid *av)
@@ -40,13 +40,13 @@ int	check_texture_extention(map_valid *av)
 	{
 		if (texture->path && texture->color[0] == '\0'
 			&& (texture->path[0] == '\0'
-			|| !ft_strchr(texture->path, '.')))
+				|| !ft_strchr(texture->path, '.')))
 			return (ft_putstr_fd("Error\nInvalid texture\n", 2), 0);
 		if (texture->path && texture->color[0] == '\0'
 			&& (ft_strcmp(ft_str_extantion(texture->path, '.'), ".xpm") != 0))
 			return (ft_putstr_fd("Error\nInvalid texture '", 2)
-				, ft_putstr_fd(texture->path, 2), write(2, "'\n", 2),0);
+				, ft_putstr_fd(texture->path, 2), write(2, "'\n", 2), 0);
 		texture = texture->next;
 	}
-	return 1;
+	return (1);
 }

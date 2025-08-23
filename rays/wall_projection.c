@@ -20,6 +20,8 @@ int find_ceiling_floor(t_table *table, char type)
 }
 void find_texture_wall_angle(t_table *table)
 {
+    if (!table || !table->map_ele)
+        return;
     map_valid *wall = table->map_ele;
     while (wall)
     {
@@ -34,101 +36,123 @@ void find_texture_wall_angle(t_table *table)
         wall = wall->next;
     }
 }
-int get_texture_pixel(t_texture *texture, int tex_x, int tex_y)
+
+char	*ft_my_strcat(char *dest, int num, char *src)
 {
-    if (tex_x < 0 || tex_x >= texture->width || tex_y < 0 || tex_y >= texture->height)
-        return 0;
-    int index = (tex_y * texture->size_line) + (tex_x * (texture->bpp / 8));
-    return *(int *)(texture->data + index);
+	int		i;
+	int		j;
+	int		dest_len;
+	int		num_len;
+	int		src_len;
+	char	*res;
+	int		tmp;
+
+	dest_len = 0;
+	while (dest[dest_len])
+		dest_len++;
+
+	num_len = (num == 0) ? 1 : 0;
+	tmp = num;
+	while (tmp)
+	{
+		tmp /= 10;
+		num_len++;
+	}
+
+	src_len = 0;
+	while (src[src_len])
+		src_len++;
+
+	res = malloc(dest_len + num_len + src_len + 1);
+	if (!res)
+		return (NULL);
+
+	i = 0;
+	while (i < dest_len)
+	{
+		res[i] = dest[i];
+		i++;
+	}
+
+	tmp = num;
+	j = num_len - 1;
+	while (j >= 0)
+	{
+		res[i + j] = (tmp % 10) + '0';
+		tmp /= 10;
+		j--;
+	}
+	i += num_len;
+
+	j = 0;
+	while (j < src_len)
+	{
+		res[i + j] = src[j];
+		j++;
+	}
+	res[i + j] = '\0';
+
+	return (res);
 }
-char *ft_my_strcat(char *dest, int num, char *src)
+
+static void	free_paths(char **paths, int count)
 {
-    int a = 0;
-    while (dest[a])
-        a++;
+	int i;
 
-    int num_copy = num;
-    int num_len = (num == 0) ? 1 : 0;
-    while (num_copy)
-    {
-        num_copy /= 10;
-        num_len++;
-    }
-
-    int b = 0;
-    while (src[b])
-        b++;
-
-    int total = a + num_len + b + 1;
-    char *res_path = malloc(total);
-    if (!res_path)
-        return NULL;
-
-    int c = 0;
-    while (c < a)
-    {
-        res_path[c] = dest[c];
-        c++;
-    }
-
-    int i = num_len - 1;
-    int temp_num = num;
-    while (i >= 0)
-    {
-        res_path[c + i] = (temp_num % 10) + '0';
-        temp_num /= 10;
-        i--;
-    }
-    c += num_len;
-
-    int j = 0;
-    while (j < b)
-    {
-        res_path[c + j] = src[j];
-        j++;
-    }
-
-    res_path[total - 1] = '\0';
-    return res_path;
+	i = 0;
+	while (i < count)
+	{
+		free(paths[i]);
+		i++;
+	}
 }
 
-t_texture hand_frames[HAND_FRAMES_KNIFE];
-t_texture hand_frames_mv[HAND_FRAMES_KNIFE_MV];
-
-char **hand_path_frames(t_hand_anim *hand, char *type_mv)
+char	**hand_path_frames(t_hand_anim *hand, char *type_mv)
 {
-    int i = 0;
-    if (ft_strcmp(type_mv, "KNIFE") == 0)
-    {
-        while (i < HAND_FRAMES_KNIFE)
-        {
-            char *path = ft_my_strcat("./texture/hand/", i + 1, ".xpm");
-            hand->hand_paths[i] = ft_strdup(path);
-            free(path);
-            i++;
-        }
-        return hand->hand_paths;
-    }
-    if (ft_strcmp(type_mv, "KNIFE_MV") == 0)
-    {
-        i = 0;
-        while (i < HAND_FRAMES_KNIFE_MV)
-        {
-            char *path = ft_my_strcat("./texture/hand1/", i + 1, ".xpm");
-            hand->hand_paths_mv[i] = ft_strdup(path);
-            free(path);
-            i++;
-        }
-        return hand->hand_paths_mv;
-    }
-    return NULL;
+	int		i;
+	char	*path;
+
+	i = 0;
+	if (ft_strcmp(type_mv, "KNIFE") == 0)
+	{
+		while (i < HAND_FRAMES_KNIFE)
+		{
+			path = ft_my_strcat("./texture/hand/", i + 1, ".xpm");
+			if (!path)
+				return free_paths(hand->hand_paths, i), NULL;
+			hand->hand_paths[i] = ft_strdup(path);
+			free(path);
+			if (!hand->hand_paths[i])
+				return free_paths(hand->hand_paths, i), NULL;
+			i++;
+		}
+		return hand->hand_paths;
+	}
+	if (ft_strcmp(type_mv, "KNIFE_MV") == 0)
+	{
+		while (i < HAND_FRAMES_KNIFE_MV)
+		{
+			path = ft_my_strcat("./texture/hand1/", i + 1, ".xpm");
+			if (!path)
+				return free_paths(hand->hand_paths_mv, i), NULL;
+			hand->hand_paths_mv[i] = ft_strdup(path);
+			free(path);
+			if (!hand->hand_paths_mv[i])
+				return free_paths(hand->hand_paths_mv, i), NULL;
+			i++;
+		}
+		return hand->hand_paths_mv;
+	}
+	return NULL;
 }
 
 void draw_hand(t_table *table)
 {
     t_texture *hand;
     int max_frames;
-    float scale_factor = 0.7;
+    float scale_x = (WINDOW_WIDTH / 1000.0f);
+    float scale_y = (WINDOW_HEIGHT / 1200.0f);
+    float scale_factor = ((scale_x < scale_y) ? scale_x : scale_y) * 0.7f;
 
     if (table->hand_anim.flag)
     {
@@ -143,20 +167,25 @@ void draw_hand(t_table *table)
 
     int scaled_width = (int)(hand->width * scale_factor);
     int scaled_height = (int)(hand->height * scale_factor);
-
     int start_x = WINDOW_WIDTH / 2 - scaled_width / 2;
     int start_y = WINDOW_HEIGHT - scaled_height;
-    for (int y = 0; y < scaled_height; y++)
+
+    int y = 0;
+    while (y < scaled_height)
     {
-        for (int x = 0; x < scaled_width; x++)
+        int x = 0;
+        while (x < scaled_width)
         {
             int tex_x = (int)(x / scale_factor);
             int tex_y = (int)(y / scale_factor);
             int color = get_texture_pixel(hand, tex_x, tex_y);
             if ((color & 0x00FFFFFF) != 0x000000)
                 put_pixel(table, start_x + x, start_y + y, color);
+            x++;
         }
+        y++;
     }
+
     if (table->hand_anim.flag && table->hand_anim.current_frame == HAND_FRAMES_KNIFE_MV - 1)
     {
         table->hand_anim.flag = false;
@@ -164,6 +193,7 @@ void draw_hand(t_table *table)
         table->hand_anim.anim_counter = 0;
         return;
     }
+
     table->hand_anim.anim_counter++;
     if (table->hand_anim.anim_counter >= HAND_ANIM_SPEED)
     {
@@ -178,14 +208,18 @@ void draw_hand(t_table *table)
     }
 }
 
+
 int weapon(t_table *table, char *type_mv)
 {
     static int loaded_knife = 0;
     static int loaded_knife_mv = 0;
     char **hand_paths = hand_path_frames(&table->hand_anim, type_mv);
-    int i = 0;
+    if (!hand_paths)
+        return 1;
+
     t_texture *frames = NULL;
     int max_frames = 0;
+    int i = 0;
 
     if (ft_strcmp(type_mv, "KNIFE") == 0)
     {
@@ -203,22 +237,25 @@ int weapon(t_table *table, char *type_mv)
         max_frames = HAND_FRAMES_KNIFE_MV;
         loaded_knife_mv = 1;
     }
+    else
+        return 1;
 
     while (i < max_frames)
     {
         frames[i].img = mlx_xpm_file_to_image(table->mlx, hand_paths[i], &frames[i].width, &frames[i].height);
         if (!frames[i].img)
-            return -1;
+            return 1;
         frames[i].data = mlx_get_data_addr(frames[i].img, &frames[i].bpp, &frames[i].size_line, &frames[i].endian);
         if (!frames[i].data)
         {
             mlx_destroy_image(table->mlx, frames[i].img);
-            return -1;
+            return 1;
         }
         i++;
     }
     return 0;
 }
+
 
 void load_textures(t_table *table)
 {
@@ -231,31 +268,76 @@ void load_textures(t_table *table)
                                                    &table->textures[2].width, &table->textures[2].height);
     table->textures[3].img = mlx_xpm_file_to_image(table->mlx, table->tex_path.EA,
                                                    &table->textures[3].width, &table->textures[3].height);
-    table->textures[4].img = mlx_xpm_file_to_image(table->mlx, "/mnt/homes/abdsebba/Desktop/untitled folder/texture/door.xpm",
-                                                   &table->textures[4].width, &table->textures[4].height);
-    while (i < 5)
+
+    i = 0;
+    while (i < 4)
     {
         if (!table->textures[i].img)
-            continue;
+        {
+            int j = 0;
+            while (j < i)
+            {
+                mlx_destroy_image(table->mlx, table->textures[j].img);
+                j++;
+            }
+            return;
+        }
         table->textures[i].data = mlx_get_data_addr(table->textures[i].img,
                                                     &table->textures[i].bpp, &table->textures[i].size_line, &table->textures[i].endian);
+        if (!table->textures[i].data)
+        {
+            int j = 0;
+            while (j <= i)
+            {
+                mlx_destroy_image(table->mlx, table->textures[j].img);
+                j++;
+            }
+            return;
+        }
         i++;
     }
 }
 
+int get_texture_pixel(t_texture *texture, int tex_x, int tex_y)
+{
+    if (!texture || !texture->data)
+        return 0;
+    if (tex_x < 0 || tex_x >= texture->width || tex_y < 0 || tex_y >= texture->height)
+        return 0;
+
+    int bytes_per_pixel = texture->bpp / 8;
+    int index = (tex_y * texture->size_line) + (tex_x * bytes_per_pixel);
+
+    if (bytes_per_pixel == 4)
+        return *(int *)(texture->data + index);
+    else if (bytes_per_pixel == 3)
+    {
+        unsigned char *p = (unsigned char *)(texture->data + index);
+        return (p[0] << 16) | (p[1] << 8) | p[2];
+    }
+    return 0;
+}
+
+
 int wall_projection(t_table *table)
 {
-    int i = 0;
+    if (!table)
+        return -1;
     find_texture_wall_angle(table);
     load_textures(table);
+    for (int i = 0; i < 4; i++)
+        if (!table->textures[i].img || !table->textures[i].data)
+            return -1;
+
+    int i = 0;
     float distance_project = (WINDOW_WIDTH / 2) / tan(FOV_ANGLE / 2);
 
     while (i < NUM_RAYS)
     {
         float ray_angle = table->rays[i].rayAngle;
         float corrected_distance = table->rays[i].distance * cos(ray_angle - table->player_coor->angle);
-        if (corrected_distance < 0.1)
-            corrected_distance = 0.1;
+        if (corrected_distance < 0.1f)
+            corrected_distance = 0.1f;
         float wall_stripheight = (TILE_SIZE / corrected_distance) * distance_project;
         int top_pixel = (int)(WINDOW_HEIGHT / 2 - wall_stripheight / 2);
         int bottom_pixel = (int)(WINDOW_HEIGHT / 2 + wall_stripheight / 2);
@@ -264,57 +346,40 @@ int wall_projection(t_table *table)
         if (bottom_pixel >= WINDOW_HEIGHT)
             bottom_pixel = WINDOW_HEIGHT - 1;
 
-        t_texture *texture;
-        float wall_hit;
-        int flip_x;
-        if (table->rays[i].hittype == 2) // door was hit
+        t_texture *texture = NULL;
+        float wall_hit = 0;
+        int flip_x = 0;
+        if (table->rays[i].wasHitVertical)
         {
-            if (table->open_door == 0)
+            wall_hit = table->rays[i].wallHitY;
+            if (ray_angle > M_PI_2 && ray_angle < 3 * M_PI_2)
             {
-                if (table->rays[i].wasHitVertical)
-                    wall_hit = table->rays[i].wallHitY;
-                else
-                    wall_hit = table->rays[i].wallHitX;
-                texture = &table->textures[4]; // door texture
-                flip_x = 0;
+                texture = &table->textures[2];
+                flip_x = 1;
             }
             else
             {
-                i++;
-                continue;
+                texture = &table->textures[3];
+                flip_x = 0;
             }
         }
         else
         {
-            if (table->rays[i].wasHitVertical)
+            wall_hit = table->rays[i].wallHitX;
+            if (ray_angle > M_PI)
             {
-                wall_hit = table->rays[i].wallHitY;
-                if (ray_angle > M_PI_2 && ray_angle < 3 * M_PI_2)
-                {
-                    texture = &table->textures[2];
-                    flip_x = 1;
-                }
-                else
-                {
-                    texture = &table->textures[3];
-                    flip_x = 0;
-                }
+                texture = &table->textures[1];
+                flip_x = 1;
             }
             else
             {
-                wall_hit = table->rays[i].wallHitX;
-                if (ray_angle > M_PI)
-                {
-                    texture = &table->textures[1];
-                    flip_x = 1;
-                }
-                else
-                {
-                    texture = &table->textures[0];
-                    flip_x = 0;
-                }
+                texture = &table->textures[0];
+                flip_x = 0;
             }
         }
+
+        if (!texture || !texture->data)
+            return -1;
 
         int tex_x = (int)(wall_hit / TILE_SIZE * texture->width) % texture->width;
         if (flip_x)
@@ -340,10 +405,6 @@ int wall_projection(t_table *table)
                         tex_y = texture->height - 1;
                     tex_pos += step;
                     int color = get_texture_pixel(texture, tex_x, tex_y);
-                    // if (table->open_door == 1)
-                    // {
-                    //     color = get_texture_pixel(texture, tex_x, tex_y);
-                    // }
                     put_pixel(table, x, y, color);
                 }
                 else
