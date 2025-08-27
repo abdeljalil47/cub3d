@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   color_check.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdsebba <abdsebba@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/27 17:14:36 by abdsebba          #+#    #+#             */
+/*   Updated: 2025/08/27 17:14:37 by abdsebba         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../header/cub3d.h"
 
 int	check_color_input(int i, int j, char **res)
@@ -17,7 +29,7 @@ not allowed!\n", 2), 0);
 	return (1);
 }
 
-int	ft_color_rgb(map_valid **map)
+int	ft_color_rgb(t_map_valid **map)
 {
 	char	**res;
 	int		i;
@@ -42,11 +54,11 @@ RGB '[0 - 255]'\n", 2), free_res(res), 0);
 arguments\n", 2), 0);
 	if (res[0] && res[1] && res[2])
 		((*map)->color_rgb = ft_atoi(res[0]) << 16
-			| ft_atoi(res[1]) << 8 | ft_atoi(res[2]) << 0);
+				| ft_atoi(res[1]) << 8 | ft_atoi(res[2]) << 0);
 	return (free_res(res), 1);
 }
 
-int	ft_handle_color(map_valid *map)
+int	ft_handle_color(t_map_valid *map)
 {
 	int	j;
 	int	comma;

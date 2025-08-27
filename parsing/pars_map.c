@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pars_map.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdsebba <abdsebba@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/27 17:14:26 by abdsebba          #+#    #+#             */
+/*   Updated: 2025/08/27 17:14:27 by abdsebba         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../header/cub3d.h"
 
 char	*ft_str_extantion(char *str, int c)
@@ -29,9 +41,9 @@ int	check_map_extention(char *av)
 	return (read_map(av));
 }
 
-int	check_texture_extention(map_valid *av)
+int	check_texture_extention(t_map_valid *av)
 {
-	map_valid	*texture;
+	t_map_valid	*texture;
 
 	texture = av;
 	if (!av)

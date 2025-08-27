@@ -6,7 +6,7 @@
 /*   By: abdsebba <abdsebba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 23:59:43 by abdsebba          #+#    #+#             */
-/*   Updated: 2025/07/15 20:56:55 by abdsebba         ###   ########.fr       */
+/*   Updated: 2025/08/23 17:11:32 by abdsebba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,8 @@ static char	*ft_line(char *tab)
 {
 	char	*line;
 	int		i;
-	int		j;
 
 	i = 0;
-	j = 0;
 	while (tab[i] != '\n' && tab[i] != '\0')
 		i++;
 	if (tab[i] == '\n')

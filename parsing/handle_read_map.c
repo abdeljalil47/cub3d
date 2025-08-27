@@ -1,13 +1,25 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   handle_read_map.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdsebba <abdsebba@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/27 17:14:33 by abdsebba          #+#    #+#             */
+/*   Updated: 2025/08/27 17:14:34 by abdsebba         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../header/cub3d.h"
 
-static int	check_empty_line(char *line, map_cub **map_c,
+static int	check_empty_line(char *line, t_map_cub **map_c,
 			int fd)
 {
 	int	i;
 	int	count;
 
 	if (line && (*map_c)->maps && (!ft_strcmp(line, "\n")
-		|| !ft_strcmp(line, " ")))
+			|| !ft_strcmp(line, " ")))
 	{
 		ft_putstr_fd("Error\nInvalid file (more new lines)!\n", 2);
 		return (close(fd), free(line), 0);
@@ -37,7 +49,7 @@ the structure or bad cordonnes!\n", 2), 0);
 	return (1);
 }
 
-int	check_all(map_valid **map, char *line, map_cub **map_c, int *i)
+int	check_all(t_map_valid **map, char *line, t_map_cub **map_c, int *i)
 {
 	if (check_type_cordonnes(*map))
 	{
@@ -68,23 +80,7 @@ static char	*open_read_first_line(int *fd, char **line, char *av)
 	return (*line);
 }
 
-int	is_empty_line(char *line)
-{
-	int	i;
-
-	i = 0;
-	if (!line)
-		return (1);
-	while (line[i])
-	{
-		if (line[i] != ' ' && line[i] != '\t' && line[i] != '\n')
-			return (0);
-		i++;
-	}
-	return (1);
-}
-
-int	read_lines(char *av, map_valid **map, map_cub **map_c, int i)
+int	read_lines(char *av, t_map_valid **map, t_map_cub **map_c, int i)
 {
 	int		fd;
 	char	*line;

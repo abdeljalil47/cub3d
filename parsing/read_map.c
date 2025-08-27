@@ -1,8 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   read_map.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdsebba <abdsebba@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/27 17:14:30 by abdsebba          #+#    #+#             */
+/*   Updated: 2025/08/27 17:51:12 by abdsebba         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../header/cub3d.h"
 
-static int	init_map_cub(map_cub **map_c)
+static int	init_map_cub(t_map_cub **map_c)
 {
-	*map_c = malloc(sizeof(map_cub));
+	*map_c = malloc(sizeof(t_map_cub));
 	if (!*map_c)
 	{
 		ft_putstr_fd("ERROR\nfailed to allocate map\n", 2);
@@ -10,7 +22,7 @@ static int	init_map_cub(map_cub **map_c)
 	}
 	(*map_c)->maps = NULL;
 	(*map_c)->dmaps = NULL;
-	(*map_c)->player_pos = malloc(sizeof(player));
+	(*map_c)->player_pos = malloc(sizeof(t_player));
 	if (!(*map_c)->player_pos)
 	{
 		free(*map_c);
@@ -20,7 +32,7 @@ static int	init_map_cub(map_cub **map_c)
 	return (1);
 }
 
-static int	free_all(map_valid *map, map_cub *map_c)
+static int	free_all(t_map_valid *map, t_map_cub *map_c)
 {
 	if (map_c)
 	{
@@ -35,8 +47,8 @@ static int	free_all(map_valid *map, map_cub *map_c)
 int	read_map(char *av)
 {
 	int			i;
-	map_valid	*map;
-	map_cub		*map_c;
+	t_map_valid	*map;
+	t_map_cub	*map_c;
 
 	if (!av)
 		return (ft_putstr_fd("Error\nInvalid map\n", 2), 0);
@@ -49,10 +61,10 @@ int	read_map(char *av)
 	if (!check_texture_extention(map)
 		|| !ft_handle_color(map)
 		|| !ft_handle_path(map))
-		return (printf("aaaaaaaaaa\n"), free_all(map, map_c));
+		return (free_all(map, map_c));
 	if (!creat_2darray(&map_c) || !handle_map(&map_c))
 		return (free_all(map, map_c));
 	if (!rander_map(&map, &map_c, &map_c->player_pos))
-		return (printf("aaaaaaaaaa2\n"), free_all(map, map_c));
+		return (free_all(map, map_c));
 	return (free_all(map, map_c), 1);
 }

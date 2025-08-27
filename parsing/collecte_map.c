@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   collecte_map.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdsebba <abdsebba@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/27 17:14:41 by abdsebba          #+#    #+#             */
+/*   Updated: 2025/08/27 17:14:42 by abdsebba         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../header/cub3d.h"
 
-void	collecte_map(char *line, map_cub **map)
+void	collecte_map(char *line, t_map_cub **map)
 {
 	char	*back;
 	char	*map_cole;
@@ -16,7 +28,7 @@ void	collecte_map(char *line, map_cub **map)
 		free(back);
 }
 
-int	creat_2darray(map_cub **map_c)
+int	creat_2darray(t_map_cub **map_c)
 {
 	if (!map_c || !(*map_c)->maps)
 		return (ft_putstr_fd("ERROR\nNo map on file\n", 2), 0);
@@ -26,7 +38,7 @@ int	creat_2darray(map_cub **map_c)
 	return (1);
 }
 
-int	find_player(map_cub **map)
+int	find_player(t_map_cub **map)
 {
 	int		x;
 	int		y;
@@ -55,7 +67,7 @@ int	find_player(map_cub **map)
 	return (1);
 }
 
-float	ft_determinate_playerangle(map_cub **map)
+float	ft_determinate_playerangle(t_map_cub **map)
 {
 	int	x;
 	int	y;
@@ -73,7 +85,7 @@ float	ft_determinate_playerangle(map_cub **map)
 	return (1);
 }
 
-int	handle_map(map_cub **map_c)
+int	handle_map(t_map_cub **map_c)
 {
 	if (!check_map_isvalid(*map_c))
 		return (ft_putstr_fd("ERROR\nmap not valid!\n", 2), 0);

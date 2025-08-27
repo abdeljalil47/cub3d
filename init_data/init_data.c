@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init_data.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdsebba <abdsebba@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/27 17:16:07 by abdsebba          #+#    #+#             */
+/*   Updated: 2025/08/27 17:16:08 by abdsebba         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../header/cub3d.h"
 
 int	check_type(char **res, int flag)
@@ -26,23 +38,14 @@ int	check_type(char **res, int flag)
 	return (0);
 }
 
-void	init_map(map_valid **map, char **value)
+static void	init_validelement(t_map_valid **elem, char **value)
 {
-	map_valid	*element;
-	map_valid	*current;
+	t_map_valid	*element;
 
-	element = malloc(sizeof(map_valid));
-	if (element == NULL)
-	{
-		if (map || *map)
-			return (free_map(map));
-		else
-			exit(1);
-	}
+	element = *elem;
 	element->next = NULL;
 	element->color_rgb = 0;
 	element->type = ft_strndup(value[0], ft_strlen(value[0]));
-
 	if (check_type(value, 0))
 	{
 		element->path = ft_strndup(value[1], ft_strlen(value[1]) - 1);
@@ -55,16 +58,12 @@ void	init_map(map_valid **map, char **value)
 		element->color = ft_strndup(value[1], ft_strlen(value[1]) - 1);
 		element->coordonne = true;
 	}
-	if (!element->type || !element->path || !element->color)
-	{
-		if (element->type)
-			free(element->type);
-		if (element->path)
-			free(element->path);
-		if (!element->color)
-			free(element->color);
-		return free(element);
-	}
+}
+
+static void	addback(t_map_valid *element, t_map_valid **map)
+{
+	t_map_valid	*current;
+
 	if (!*map)
 		*map = element;
 	else
@@ -74,4 +73,30 @@ void	init_map(map_valid **map, char **value)
 			current = current->next;
 		current->next = element;
 	}
+}
+
+void	init_map(t_map_valid **map, char **value)
+{
+	t_map_valid	*element;
+
+	element = malloc(sizeof(t_map_valid));
+	if (element == NULL)
+	{
+		if (map || *map)
+			return (free_map(map));
+		else
+			return ;
+	}
+	init_validelement(&element, value);
+	if (!element->type || !element->path || !element->color)
+	{
+		if (element->type)
+			free(element->type);
+		if (element->path)
+			free(element->path);
+		if (!element->color)
+			free(element->color);
+		return (free(element));
+	}
+	addback(element, map);
 }

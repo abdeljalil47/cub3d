@@ -1,13 +1,25 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   check_close_map.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdsebba <abdsebba@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/27 17:14:49 by abdsebba          #+#    #+#             */
+/*   Updated: 2025/08/27 17:14:50 by abdsebba         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../header/cub3d.h"
 
 int	ischaracters(char *line)
 {
-    int	i;
+	int	i;
 
 	i = 0;
-    while (line[i] && !(line[i] == 32 || (line[i] >= 9 && line[i] <= 13)))
-        i++;
-    return (i);
+	while (line[i] && !(line[i] == 32 || (line[i] >= 9 && line[i] <= 13)))
+		i++;
+	return (i);
 }
 
 int	parce_lines(char *tmp, char *prev, char *next, int j)
@@ -19,7 +31,7 @@ int	parce_lines(char *tmp, char *prev, char *next, int j)
 		if (tmp[j] == '1')
 		{
 			j++;
-			continue;
+			continue ;
 		}
 		if (!check_prev(j, tmp, prev, next))
 			return (0);
@@ -28,7 +40,7 @@ int	parce_lines(char *tmp, char *prev, char *next, int j)
 	return (1);
 }
 
-int	check_bpund_map(map_cub *map, int i)
+int	check_bpund_map(t_map_cub *map, int i)
 {
 	if (i == 0 && (ft_strchr(map->dmaps[i], '0')
 			|| ft_strchr(map->dmaps[i], 'S')
@@ -45,7 +57,7 @@ invalid structure of walls!\n", 2), 0);
 	return (1);
 }
 
-int	check_close_map(map_cub *map)
+int	check_close_map(t_map_cub *map)
 {
 	int	i;
 	int	j;
@@ -58,13 +70,14 @@ int	check_close_map(map_cub *map)
 		j = 0;
 		while ((i != 0 || map->dmaps[i + 1] == NULL) && map->dmaps[i][j])
 		{
-			if (map->dmaps[i][j] == '0' || map->dmaps[i][j] == 'N' || map->dmaps[i][j] == 'S'
-				|| map->dmaps[i][j] == 'W' || map->dmaps[i][j] == 'E')
+			if (check_element(map->dmaps[i][j]))
 			{
-				if (!parce_lines(map->dmaps[i], map->dmaps[i - 1], map->dmaps[i + 1], j))
-					return (ft_putstr_fd("ERROR\nWorng palcing the map structure!\n", 2), 0);
+				if (!parce_lines(map->dmaps[i], map->dmaps[i - 1],
+						map->dmaps[i + 1], j))
+					return (ft_putstr_fd("ERROR\nWorng placing the \
+map structure!\n", 2), 0);
 				else
-					break;
+					break ;
 			}
 			j++;
 		}
@@ -73,10 +86,10 @@ int	check_close_map(map_cub *map)
 	return (1);
 }
 
-int	ft_handle_path(map_valid *val)
+int	ft_handle_path(t_map_valid *val)
 {
 	int			fd;
-	map_valid	*check;
+	t_map_valid	*check;
 	int			i;
 
 	if (!val)
