@@ -1,22 +1,40 @@
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -Ofast
+CFLAGS = -Wall -Wextra -Werror -ofast
 MLXLIB = -lmlx -framework OpenGL -framework AppKit
 
-SRC = parsing/pars_map.c cub3d.c get_next_line/get_next_line.c get_next_line/get_next_line_utils.c \
-	parsing/read_map.c init_data/init_data.c parsing/collecte_map.c parsing/check_coordonnes.c \
-	parsing/check_close_map.c free_stuff/free_map.c free_stuff/free_map_c.c free_stuff/free_player.c \
-	free_stuff/free_res.c rander_map/rander_map.c rander_map/put_texture.c rander_map/move_player.c \
-	rays/cast_rays.c rays/wall_projection.c rander_map/check_top_move.c \
-	rander_map/check_left_move.c parsing/check_map_coluction.c free_stuff/free_out.c rander_map/keymove.c\
-	parsing/color_check.c parsing/handle_read_map.c rander_map/print_window_error.c rander_map/realasekey.c\
-	rander_map/loopmain.c rander_map/checkmove.c rander_map/put_elements.c rays/load_textures.c \
-	free_stuff/free_paths.c rays/halpfunction.c free_stuff/free_weapon.c rays/parse_textures.c \
-	rays/get_texture_pixel.c rays/render_3d_helper.c rays/get_pixel_bounds.c rays/load_textures_helper.c \
-	rays/castpart.c rander_map/playerdirec.c free_stuff/free_error.c rays/draw_hand.c
+SRC = mandatory/parsing/pars_map.c mandatory/cub3d.c mandatory/get_next_line/get_next_line.c mandatory/get_next_line/get_next_line_utils.c \
+	mandatory/parsing/read_map.c mandatory/init_data/init_data.c mandatory/parsing/collecte_map.c mandatory/parsing/check_coordonnes.c \
+	mandatory/parsing/check_close_map.c mandatory/free_stuff/free_map.c mandatory/free_stuff/free_map_c.c mandatory/free_stuff/free_player.c \
+	mandatory/free_stuff/free_res.c mandatory/rander_map/rander_map.c mandatory/rander_map/move_player.c \
+	mandatory/rays/cast_rays.c mandatory/rays/wall_projection.c mandatory/rander_map/check_top_move.c \
+	mandatory/rander_map/check_left_move.c mandatory/parsing/check_map_coluction.c mandatory/free_stuff/free_out.c mandatory/rander_map/keymove.c\
+	mandatory/parsing/color_check.c mandatory/parsing/handle_read_map.c mandatory/rander_map/print_window_error.c mandatory/rander_map/realasekey.c\
+	mandatory/rander_map/loopmain.c mandatory/rander_map/checkmove.c \
+	mandatory/free_stuff/free_paths.c mandatory/rays/halpfunction.c mandatory/rays/parse_textures.c \
+	mandatory/rays/get_texture_pixel.c mandatory/rays/render_3d_helper.c mandatory/rays/get_pixel_bounds.c mandatory/rays/load_textures_helper.c \
+	mandatory/rays/castpart.c
+
+BONUS_SRC = bonus/parsing/pars_map.c bonus/cub3d_bonus.c bonus/get_next_line/get_next_line.c bonus/get_next_line/get_next_line_utils.c \
+	bonus/parsing/read_map.c bonus/init_data/init_data.c bonus/parsing/collecte_map.c bonus/parsing/check_coordonnes.c \
+	bonus/parsing/check_close_map.c bonus/free_stuff/free_map.c bonus/free_stuff/free_map_c.c bonus/free_stuff/free_player.c \
+	bonus/free_stuff/free_res.c bonus/rander_map/rander_map.c bonus/rander_map/put_texture.c bonus/rander_map/move_player.c \
+	bonus/rays/cast_rays.c bonus/rays/wall_projection.c bonus/rander_map/check_top_move.c \
+	bonus/rander_map/check_left_move.c bonus/parsing/check_map_coluction.c bonus/free_stuff/free_out.c bonus/rander_map/keymove.c\
+	bonus/parsing/color_check.c bonus/parsing/handle_read_map.c bonus/rander_map/print_window_error.c bonus/rander_map/realasekey.c\
+	bonus/rander_map/loopmain.c bonus/rander_map/checkmove.c bonus/rander_map/put_elements.c bonus/rays/load_textures.c \
+	bonus/free_stuff/free_paths.c bonus/rays/halpfunction.c bonus/free_stuff/free_weapon.c bonus/rays/parse_textures.c \
+	bonus/rays/get_texture_pixel.c bonus/rays/render_3d_helper.c bonus/rays/get_pixel_bounds.c bonus/rays/load_textures_helper.c \
+	bonus/rays/castpart.c bonus/rander_map/playerdirec.c bonus/free_stuff/free_error.c bonus/rays/draw_hand.c
+
 
 OBJ = $(SRC:.c=.o)
+BONUS_OBJ = $(BONUS_SRC:.c=.o)
+
 NAME = cub3d
-LIB = libft/libft.a
+NAME_BONUS = cub3d_bonus
+
+LIB_bonus = bonus/libft/libft.a
+LIB_manda = mandatory/libft/libft.a
 
 GREEN = \033[1;32m
 RED = \033[1;31m
@@ -25,16 +43,28 @@ YELLOW = \033[1;33m
 RESET = \033[0m
 
 all: banner $(NAME)
-	@echo "$(GREEN)✔ Build complete!$(RESET)"
+	@echo "$(GREEN)✔ Build Mandatory Complete!$(RESET)"
 	@echo "$(CYAN)🚀 Run ./cub3d map/map.cub to start the adventure!$(RESET)"
 
-$(LIB):
-	make -C libft
+bonus: banner $(NAME_BONUS)
+	@echo "$(GREEN)✔ Build Bonus Complete!$(RESET)"
+	@echo "$(CYAN)🚀 Run ./cub3d_bonus map/map.cub to start the adventure!$(RESET)"
 
-$(NAME): $(LIB) $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) $(LIB) $(MLXLIB) -o $@
+$(NAME):  $(OBJ) 
+	make -C mandatory/libft
+	$(CC) $(CFLAGS) $(OBJ) $(LIB_manda) $(MLXLIB) -o $@
 
-%.o: %.c  header/cub3d.h libft/libft.h get_next_line/get_next_line.h
+%.o: %.c mandatory/header/cub3d.h mandatory/libft/libft.h mandatory/get_next_line/get_next_line.h
+	$(CC) $(CFLAGS) -c $< -o $@
+
+
+
+$(NAME_BONUS): $(LIB_bonus) $(BONUS_OBJ)
+	make -C bonus/libft
+	$(CC) $(CFLAGS) $(BONUS_OBJ) $(LIB_bonus) $(MLXLIB) -o $@
+
+
+%.o: %.c bonus/header/cub3d_bonus.h bonus/libft/libft.h bonus/get_next_line/get_next_line.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
 banner:
@@ -61,10 +91,12 @@ banner:
 
 clean:
 	rm -f $(OBJ)
+	rm -f $(BONUS_OBJ)
 
 fclean: clean
-	make fclean -C libft
+	make fclean -C mandatory/libft
 	rm -f $(NAME)
+	rm -f $(NAME_BONUS)
 
 re: fclean all
 
