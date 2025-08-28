@@ -6,7 +6,7 @@
 /*   By: abdsebba <abdsebba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 15:01:30 by ahbilla           #+#    #+#             */
-/*   Updated: 2025/08/27 19:31:28 by abdsebba         ###   ########.fr       */
+/*   Updated: 2025/08/28 15:39:56 by abdsebba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@
 
 # define HAND_FRAMES_KNIFE 23
 # define HAND_FRAMES_KNIFE_MV 30
-# define HAND_ANIM_SPEED 3
+# define HAND_ANIM_SPEED 2
 
 # define KEY_KNIFE 14
 # define KEY_RELEASE_1 259
@@ -173,6 +173,7 @@ typedef struct s_table
 	int				flag;
 	int				minimap_size;
 	int				minimap_center;
+	int				last_x;
 }	t_table;
 
 typedef struct s_data

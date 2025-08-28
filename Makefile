@@ -54,17 +54,14 @@ $(NAME):  $(OBJ)
 	make -C mandatory/libft
 	$(CC) $(CFLAGS) $(OBJ) $(LIB_manda) $(MLXLIB) -o $@
 
-%.o: %.c mandatory/header/cub3d.h mandatory/libft/libft.h mandatory/get_next_line/get_next_line.h
+mandatory/%.o: mandatory/%.c mandatory/header/cub3d.h mandatory/libft/libft.h mandatory/get_next_line/get_next_line.h
 	$(CC) $(CFLAGS) -c $< -o $@
-
-
 
 $(NAME_BONUS): $(LIB_bonus) $(BONUS_OBJ)
 	make -C bonus/libft
 	$(CC) $(CFLAGS) $(BONUS_OBJ) $(LIB_bonus) $(MLXLIB) -o $@
 
-
-%.o: %.c bonus/header/cub3d_bonus.h bonus/libft/libft.h bonus/get_next_line/get_next_line.h
+bonus/%.o: bonus/%.c bonus/header/cub3d_bonus.h bonus/libft/libft.h bonus/get_next_line/get_next_line.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
 banner:

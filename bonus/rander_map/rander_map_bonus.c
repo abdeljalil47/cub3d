@@ -6,7 +6,7 @@
 /*   By: abdsebba <abdsebba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 17:08:57 by abdsebba          #+#    #+#             */
-/*   Updated: 2025/08/28 15:12:34 by abdsebba         ###   ########.fr       */
+/*   Updated: 2025/08/28 15:40:27 by abdsebba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ static t_table	*init_table(t_map_cub *map_structure,
 			, ft_putstr_fd("allocate texPath failed!\n", 2), NULL);
 	table->minimap_size = WINDOW_WIDTH * 0.16;
 	table->minimap_center = table->minimap_size / 2;
-	return (table);
+	return (table->last_x = -1, table);
 }
 
 static int	init_image(t_table *table)

@@ -6,7 +6,7 @@
 /*   By: abdsebba <abdsebba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 17:09:29 by abdsebba          #+#    #+#             */
-/*   Updated: 2025/08/28 15:12:17 by abdsebba         ###   ########.fr       */
+/*   Updated: 2025/08/28 15:46:23 by abdsebba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,16 +79,15 @@ void	cast_all_rays(t_table *table)
 
 int	mouse_move(int x, int y, t_table *table)
 {
-	(void)y;
-	static int	last_x = -1;
-	double		sensitivity;
-	int			delta_x;
+	double	sensitivity;
+	int		delta_x;
 
+	(void)y;
 	sensitivity = 0.004;
-	if (last_x == -1)
-		last_x = x;
-	delta_x = x - last_x;
+	if (table->last_x == -1)
+		table->last_x = x;
+	delta_x = x - table->last_x;
 	table->player_coor->angle += delta_x * sensitivity;
-	last_x = x;
+	table->last_x = x;
 	return (0);
 }
