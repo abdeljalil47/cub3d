@@ -14,17 +14,17 @@ SRC = mandatory/parsing/pars_map.c mandatory/cub3d.c mandatory/get_next_line/get
 	mandatory/rays/get_texture_pixel.c mandatory/rays/render_3d_helper.c mandatory/rays/get_pixel_bounds.c mandatory/rays/load_textures_helper.c \
 	mandatory/rays/castpart.c
 
-BONUS_SRC = bonus/parsing/pars_map.c bonus/cub3d_bonus.c bonus/get_next_line/get_next_line.c bonus/get_next_line/get_next_line_utils.c \
-	bonus/parsing/read_map.c bonus/init_data/init_data.c bonus/parsing/collecte_map.c bonus/parsing/check_coordonnes.c \
-	bonus/parsing/check_close_map.c bonus/free_stuff/free_map.c bonus/free_stuff/free_map_c.c bonus/free_stuff/free_player.c \
-	bonus/free_stuff/free_res.c bonus/rander_map/rander_map.c bonus/rander_map/put_texture.c bonus/rander_map/move_player.c \
-	bonus/rays/cast_rays.c bonus/rays/wall_projection.c bonus/rander_map/check_top_move.c \
-	bonus/rander_map/check_left_move.c bonus/parsing/check_map_coluction.c bonus/free_stuff/free_out.c bonus/rander_map/keymove.c\
-	bonus/parsing/color_check.c bonus/parsing/handle_read_map.c bonus/rander_map/print_window_error.c bonus/rander_map/realasekey.c\
-	bonus/rander_map/loopmain.c bonus/rander_map/checkmove.c bonus/rander_map/put_elements.c bonus/rays/load_textures.c \
-	bonus/free_stuff/free_paths.c bonus/rays/halpfunction.c bonus/free_stuff/free_weapon.c bonus/rays/parse_textures.c \
-	bonus/rays/get_texture_pixel.c bonus/rays/render_3d_helper.c bonus/rays/get_pixel_bounds.c bonus/rays/load_textures_helper.c \
-	bonus/rays/castpart.c bonus/rander_map/playerdirec.c bonus/free_stuff/free_error.c bonus/rays/draw_hand.c
+BONUS_SRC = bonus/parsing/pars_map_bonus.c bonus/cub3d_bonus.c bonus/get_next_line/get_next_line_bonus.c bonus/get_next_line/get_next_line_utils_bonus.c \
+	bonus/parsing/read_map_bonus.c bonus/init_data/init_data_bonus.c bonus/parsing/collecte_map_bonus.c bonus/parsing/check_coordonnes_bonus.c \
+	bonus/parsing/check_close_map_bonus.c bonus/free_stuff/free_map_bonus.c bonus/free_stuff/free_map_c_bonus.c bonus/free_stuff/free_player_bonus.c \
+	bonus/free_stuff/free_res_bonus.c bonus/rander_map/rander_map_bonus.c bonus/rander_map/put_texture_bonus.c bonus/rander_map/move_player_bonus.c \
+	bonus/rays/cast_rays_bonus.c bonus/rays/wall_projection_bonus.c bonus/rander_map/check_top_move_bonus.c \
+	bonus/rander_map/check_left_move_bonus.c bonus/parsing/check_map_coluction_bonus.c bonus/free_stuff/free_out_bonus.c bonus/rander_map/keymove_bonus.c \
+	bonus/parsing/color_check_bonus.c bonus/parsing/handle_read_map_bonus.c bonus/rander_map/print_window_error_bonus.c bonus/rander_map/realasekey_bonus.c \
+	bonus/rander_map/loopmain_bonus.c bonus/rander_map/checkmove_bonus.c bonus/rander_map/put_elements_bonus.c bonus/rays/load_textures_bonus.c \
+	bonus/free_stuff/free_paths_bonus.c bonus/rays/halpfunction_bonus.c bonus/free_stuff/free_weapon_bonus.c bonus/rays/parse_textures_bonus.c \
+	bonus/rays/get_texture_pixel_bonus.c bonus/rays/render_3d_helper_bonus.c bonus/rays/get_pixel_bounds_bonus.c bonus/rays/load_textures_helper_bonus.c \
+	bonus/rays/castpart_bonus.c bonus/rander_map/playerdirec_bonus.c bonus/free_stuff/free_error_bonus.c bonus/rays/draw_hand_bonus.c
 
 
 OBJ = $(SRC:.c=.o)
