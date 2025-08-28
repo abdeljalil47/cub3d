@@ -6,7 +6,7 @@
 /*   By: abdsebba <abdsebba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 17:09:29 by abdsebba          #+#    #+#             */
-/*   Updated: 2025/08/27 18:52:48 by abdsebba         ###   ########.fr       */
+/*   Updated: 2025/08/28 14:04:29 by abdsebba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ void	put_pixel(t_table *table, int x, int y, int color)
 		*(unsigned int *)dst = color;
 	}
 }
+
 int	mainloop(void *param)
 {
 	t_table	*table;

@@ -6,14 +6,13 @@
 /*   By: abdsebba <abdsebba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 17:14:33 by abdsebba          #+#    #+#             */
-/*   Updated: 2025/08/27 17:14:34 by abdsebba         ###   ########.fr       */
+/*   Updated: 2025/08/27 23:02:41 by abdsebba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../header/cub3d.h"
 
-static int	check_empty_line(char *line, t_map_cub **map_c,
-			int fd)
+static int	check_empty_line(char *line, t_map_cub **map_c)
 {
 	int	i;
 	int	count;
@@ -22,7 +21,7 @@ static int	check_empty_line(char *line, t_map_cub **map_c,
 			|| !ft_strcmp(line, " ")))
 	{
 		ft_putstr_fd("Error\nInvalid file (more new lines)!\n", 2);
-		return (close(fd), free(line), 0);
+		return (free(line), 0);
 	}
 	else if (line && (*map_c)->maps)
 	{
@@ -36,7 +35,7 @@ static int	check_empty_line(char *line, t_map_cub **map_c,
 			count++;
 		}
 		if (i == count)
-			return (close(fd), free(line), 0);
+			return (write(2, "ERROR\nBad map\n", 17), free(line), 0);
 	}
 	return (1);
 }
@@ -90,8 +89,8 @@ int	read_lines(char *av, t_map_valid **map, t_map_cub **map_c, int i)
 		return (0);
 	while (line)
 	{
-		if (!check_empty_line(line, map_c, fd))
-			return (0);
+		if (!check_empty_line(line, map_c))
+			return (close(fd), 0);
 		if (is_empty_line(line))
 		{
 			free(line);
