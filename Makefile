@@ -1,5 +1,5 @@
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -ofast
+CFLAGS = -Wall -Wextra -Werror -Ofast -fsanitize=address 
 MLXLIB = -lmlx -framework OpenGL -framework AppKit
 
 SRC = mandatory/parsing/pars_map.c mandatory/cub3d.c mandatory/get_next_line/get_next_line.c mandatory/get_next_line/get_next_line_utils.c \
@@ -30,8 +30,8 @@ BONUS_SRC = bonus/parsing/pars_map_bonus.c bonus/cub3d_bonus.c bonus/get_next_li
 OBJ = $(SRC:.c=.o)
 BONUS_OBJ = $(BONUS_SRC:.c=.o)
 
-NAME = cub3d
-NAME_BONUS = cub3d_bonus
+NAME = cub3D
+NAME_BONUS = cub3D_bonus
 
 LIB_bonus = bonus/libft/libft.a
 LIB_manda = mandatory/libft/libft.a

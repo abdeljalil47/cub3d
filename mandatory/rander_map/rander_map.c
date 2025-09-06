@@ -6,7 +6,7 @@
 /*   By: abdsebba <abdsebba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 17:08:57 by abdsebba          #+#    #+#             */
-/*   Updated: 2025/08/27 18:51:54 by abdsebba         ###   ########.fr       */
+/*   Updated: 2025/08/31 22:34:15 by abdsebba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ static int	init_image(t_table *table)
 static int	init_window(t_table *table)
 {
 	table->mlx_win = mlx_new_window(table->mlx, WINDOW_WIDTH,
-			WINDOW_HEIGHT, "cub3d");
+			WINDOW_HEIGHT, "cub3D");
 	if (!table->mlx_win)
 	{
 		mlx_destroy_image(table->mlx, table->img);

@@ -6,7 +6,7 @@
 /*   By: abdsebba <abdsebba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 15:01:30 by ahbilla           #+#    #+#             */
-/*   Updated: 2025/08/28 15:39:56 by abdsebba         ###   ########.fr       */
+/*   Updated: 2025/09/04 21:47:41 by abdsebba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,15 +176,6 @@ typedef struct s_table
 	int				last_x;
 }	t_table;
 
-typedef struct s_data
-{
-	int	x0;
-	int	y0;
-	int	x1;
-	int	y1;
-	int	color;
-}	t_data;
-
 typedef struct s_horz_data
 {
 	float	player_x;
@@ -240,7 +231,6 @@ int			check_top_move(t_table *table, float x, float y);
 int			check_bottom_move(t_table *table, float x, float y);
 int			check_left_move(t_table *table, float x, float y);
 int			check_right_move(t_table *table, float x, float y);
-void		draw_line(t_table *table, t_data *data, int e2, int err);
 void		put_pixel(t_table *table, int x, int y, int color);
 int			cast_rays(t_table *table, float ray_angle, int columnid);
 void		print_window_error(void);
@@ -294,4 +284,5 @@ int			read_lines(char *av, t_map_valid **map, t_map_cub **map_c, int i);
 void		free_player(t_player *player);
 void		free_map_c(t_map_cub *map);
 void		free_map(t_map_valid **maps);
+
 #endif

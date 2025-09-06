@@ -6,7 +6,7 @@
 /*   By: abdsebba <abdsebba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 17:09:05 by abdsebba          #+#    #+#             */
-/*   Updated: 2025/08/28 15:12:28 by abdsebba         ###   ########.fr       */
+/*   Updated: 2025/09/02 15:59:13 by abdsebba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,26 +31,6 @@ static void	draw_element_tile(t_table *table, int start_x
 	}
 }
 
-void	init_lineplayer(t_table *table)
-{
-	int		end_x;
-	int		end_y;
-	int		color;
-	t_data	data;
-
-	color = get_inverse_color(table->ciel, 'P');
-	end_x = table->minimap_center
-		+ (int)(cos(table->player_coor->angle) * 18);
-	end_y = table->minimap_center
-		+ (int)(sin(table->player_coor->angle) * 18);
-	data.color = color;
-	data.x0 = table->minimap_center;
-	data.x1 = end_x;
-	data.y0 = table->minimap_center;
-	data.y1 = end_y;
-	draw_line(table, &data, 0, 0);
-}
-
 int	put_element(t_table *table, char c, int x, int y)
 {
 	int		color;
@@ -69,7 +49,6 @@ int	put_element(t_table *table, char c, int x, int y)
 	start_y = table->minimap_center + (x * TILE_SIZE - player_py)
 		* MINIMAP_SCALE;
 	draw_element_tile(table, start_x, start_y, color);
-	init_lineplayer(table);
 	return (1);
 }
 

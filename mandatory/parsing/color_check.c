@@ -6,24 +6,51 @@
 /*   By: abdsebba <abdsebba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 17:14:36 by abdsebba          #+#    #+#             */
-/*   Updated: 2025/08/27 17:14:37 by abdsebba         ###   ########.fr       */
+/*   Updated: 2025/09/06 20:36:07 by abdsebba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../header/cub3d.h"
 
+long	ft_atoi_handle(char *str)
+{
+	int		i;
+	int		sign;
+	long	result;
+
+	i = 0;
+	sign = 1;
+	result = 0;
+	while (str[i] == 32 || (str[i] >= 9 && str[i] <= 13))
+		i++;
+	if (str[i] == '-')
+	{
+		sign *= -1;
+		i++;
+	}
+	while (str[i] >= '0' && str[i] <= '9')
+	{
+		result = result * 10 + (str[i] - 48);
+		if ((result * sign) > INT_MAX || (result * sign) < INT_MIN)
+			return (INT_MAX + (long)1);
+		i++;
+	}
+	return (sign * result);
+}
+
 int	check_color_input(int i, int j, char **res)
 {
 	while (res[i][j])
 	{
-		if (res[i][j] == '+' || res[i][j] == '-')
+		if (j == 0 && (res[i][j] == '+' || res[i][j] == '-'))
 			j++;
 		if (!ft_isdigit(res[i][j]))
 			return (ft_putstr_fd("ERROR\nColor RGB \
 not a digit\n", 2), 0);
 		j++;
 	}
-	if (ft_atoi(res[i]) < 0)
+	if (ft_atoi_handle(res[i]) > INT_MAX
+		|| ft_atoi_handle(res[i]) < INT_MIN)
 		return (ft_putstr_fd("ERROR\nNegative RGB \
 not allowed!\n", 2), 0);
 	return (1);
